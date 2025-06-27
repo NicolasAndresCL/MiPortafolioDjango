@@ -1,0 +1,21 @@
+env/
+
+# Archivos de Python
+*.pyc
+__pycache__/
+
+# Base de datos
+db.sqlite3
+
+# Archivos de configuración local (si los usas)
+env
+*env
+local_settings.py
+
+# Archivos estáticos y de medios generados (si no quieres versionarlos)
+# Si Django recopila estáticos aquí:
+staticfiles/
+# Si Django guarda medios aquí (archivos subidos por usuarios):
+media/
+
+.env

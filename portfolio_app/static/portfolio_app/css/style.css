@@ -1,0 +1,356 @@
+/* D:\Aprendizaje\ReactPy\static\css\style.css */
+
+body {
+    font-family: 'Montserrat', sans-serif; /* Fuente principal para el cuerpo */
+    margin: 0;
+    padding: 0;
+    background-color: #F8F0E3; /* Nude: Crema muy claro */
+    color: #333333; /* TEXTO OSCURO: Casi negro */
+    line-height: 1.6;
+}
+
+header {
+    background-color: #DCD7C9; /* Nude: Un gris-beige claro para el encabezado */
+    color: #333333; /* TEXTO OSCURO: Para el texto del encabezado */
+    padding: 1em 0;
+    text-align: center;
+}
+
+header h1 {
+    font-family: 'Playfair Display', serif; /* Fuente llamativa para h1 */
+    font-style: italic; /* ¡Añadido: Título en cursiva! */
+    margin-bottom: 0.5em;
+    color: #333333; /* TEXTO OSCURO: Para el título h1 */
+}
+
+nav a {
+    font-family: 'Montserrat', sans-serif; /* Consistencia con el cuerpo */
+    color: #6B6D6D; /* Nude: Un gris cálido para los enlaces de navegación, para que destaquen sin ser negros */
+    margin: 0 15px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #A98C7F; /* Nude: Títulos/Texto de acento (un poco más oscuro al pasar el ratón) */
+}
+
+
+main {
+    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: #EADBC8; /* Nude: Beige claro / Arena para el contenido principal */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra más suave */
+}
+
+section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border-bottom: 1px solid #C8B6A6; /* Nude: Borde suave */
+}
+
+section:last-child {
+    border-bottom: none;
+}
+
+h2 {
+    font-family: 'Playfair Display', serif; /* Fuente llamativa para h2 */
+    color: #333333; /* TEXTO OSCURO: Para los títulos h2 */
+    border-bottom: 2px solid #A98C7F; /* Nude: Borde de acento (más oscuro para contraste) */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.boton {
+    font-family: 'Montserrat', sans-serif; /* Consistencia con el cuerpo */
+    display: inline-block;
+    background-color: #CE978A; /* Nude: Botones / Acentos */
+    color: white; /* Texto blanco para contraste */
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin: 10px 5px;
+    transition: background-color 0.3s ease;
+}
+
+.boton:hover {
+    background-color: #B27B6E; /* Nude: Hover de botones */
+}
+
+.botones-hero {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Sección de Proyectos Destacados */
+.mis-proyectos-destacados {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f8f5f0; /* Color de fondo de tu sección */
+}
+
+.mis-proyectos-destacados h2 {
+    color: #4A4A4A;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-family: 'Georgia', serif; /* O la fuente que estés usando */
+}
+
+.proyectos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    /* --- MODIFICADO: Centra las columnas del grid si no llenan todo el ancho del contenedor --- */
+    justify-content: center;
+    /* --- Añadido: Para centrar cada elemento dentro de su celda de grid --- */
+    justify-items: center; /* Centra los elementos horizontalmente dentro de cada celda del grid */
+    align-items: stretch; /* Asegura que las tarjetas se estiren verticalmente si es necesario */
+}
+
+/* MODIFICADO: Estilos para hacer toda la tarjeta de proyecto clicable */
+.proyecto-card-link {
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    color: inherit; /* Hereda el color del texto de la tarjeta, no el azul de enlace por defecto */
+    display: block; /* Asegura que el enlace ocupe todo el espacio de la tarjeta */
+    max-width: 320px; /* Define un ancho máximo para la tarjeta (ajusta si es necesario) */
+    width: 100%; /* Permite que se adapte a anchos menores */
+    /* --- AÑADIDO: Centra el bloque .proyecto-card-link si tiene menos de max-width --- */
+    margin-left: auto;
+    margin-right: auto;
+    /* --- FIN AÑADIDO --- */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.proyecto-card-link:hover .proyecto-card {
+    transform: translateY(-5px); /* Eleva la tarjeta ligeramente al pasar el ratón */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada al pasar el ratón */
+}
+
+/* Opcional: Asegura que el color del texto sea el correcto */
+.proyecto-card-link .proyecto-card h3,
+.proyecto-card-link .proyecto-card p,
+.proyecto-card-link .proyecto-card span {
+    color: inherit;
+    text-align: center; /* Añadido: Centra el texto dentro de la tarjeta */
+}
+
+
+.proyecto-card {
+    background-color: #DCD7C9; /* Nude: Fondo de tarjetas de proyecto (similar al header) */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra más suave */
+    color: #333333; /* TEXTO OSCURO: Texto para tarjetas */
+    height: 100%; /* Si estás usando grid, esto puede ser útil */
+    display: flex; /* Para controlar el contenido interno */
+    flex-direction: column; /* Para apilar el contenido verticalmente */
+    justify-content: space-between; /* Para distribuir el espacio */
+    align-items: center; /* AÑADIDO: Centra los items verticalmente dentro de la card (si es necesario) */
+    text-align: center; /* AÑADIDO: Centra el texto por defecto en la card */
+}
+
+/* --- MODIFICADO: Centrar la imagen dentro de la tarjeta --- */
+.proyecto-card .project-image {
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: block; /* La imagen se comporta como un bloque */
+    margin-left: auto; /* Margen izquierdo automático */
+    margin-right: auto; /* Margen derecho automático */
+    max-width: 250px; /* Asegura que la imagen no se desborde */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.boton-interno-proyecto {
+    display: inline-block;
+    background-color: #A98C7F; /* O un color de tu paleta nude */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px; /* Espacio superior */
+    transition: background-color 0.3s ease;
+    font-size: 0.9em;
+}
+
+.boton-interno-proyecto:hover {
+    background-color: #8C736A; /* Un tono más oscuro al pasar el ratón */
+}
+
+.skills-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: normal; /* AÑADIDO: Centra las habilidades */
+}
+
+.skills-list li {
+    font-family: 'Montserrat', sans-serif; /* Consistencia con el cuerpo */
+    background-color: #C8B6A6; /* Nude: Fondo de ítems de habilidades */
+    color: #333333; /* TEXTO OSCURO: Color de texto para habilidades */
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+/* Sección de Habilidades */
+.mis-habilidades {
+    text-align: center;
+    padding: 40px 20px;
+    background-color:  #F0EAE4; /* Color de fondo de tu sección */
+    margin-top: 50px; /* Separación con la sección anterior */
+}
+
+.mis-habilidades h2 {
+    color: #4A4A4A;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-family: 'Georgia', serif; /* O la fuente que estés usando */
+}
+
+.habilidades-container {
+    display: flex; /* Convierte el contenedor en un contenedor flex */
+    flex-wrap: wrap; /* Permite que las habilidades salten a la siguiente línea si no hay espacio */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    gap: 15px; /* Espacio entre cada habilidad */
+    max-width: 900px; /* Ancho máximo para el contenedor de habilidades */
+    margin: 0 auto; /* Centra el contenedor completo de habilidades */
+    padding: 20px 0;
+}
+
+.habilidad-item {
+    background-color: #D9C2B2; /* Un color nude/terroso para el fondo de la habilidad */
+    color: #4A4A4A; /* Color de texto más oscuro para contraste */
+    padding: 10px 20px;
+    border-radius: 20px; /* Bordes redondeados para que parezca una 'pastilla' o 'badge' */
+    font-size: 1em;
+    font-weight: bold;
+    white-space: nowrap; /* Evita que el texto de la habilidad se rompa en varias líneas */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.habilidad-item:hover {
+    transform: translateY(-2px);
+    background-color: #C2AE9F; /* Ligeramente más oscuro al pasar el ratón */
+}
+
+/* Si tienes el botón "Pronto añadiré mis habilidades!" puedes estilizarlo así */
+.boton-anadir-habilidades button {
+    background-color: #A98C7F;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 30px; /* Espacio superior para separarlo de las habilidades */
+    transition: background-color 0.3s ease;
+}
+
+.boton-anadir-habilidades button:hover {
+    background-color: #8C736A;
+}
+
+footer {
+    font-family: 'Montserrat', sans-serif; /* Consistencia con el cuerpo */
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: #DCD7C9; /* Nude: Fondo del footer (similar al header) */
+    color: #333333; /* TEXTO OSCURO: Texto del footer */
+}
+/* --- Estilos para el Formulario de Contacto (de Uiverse.io, adaptado a los colores nude) --- */
+/* --- Estilos para el Formulario de Contacto (de Uiverse.io, adaptado a los colores nude) --- */
+.contact-form-nude {
+    background-color: #EADBC8;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px; /* Limitar ancho del formulario */
+    margin: 40px auto; /* Centrar el formulario */
+}
+
+.contact-form-nude label {
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.contact-form-nude .heading {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: #333333;
+    margin-bottom: 20px;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+}
+
+.contact-form-nude form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-form-nude input,
+.contact-form-nude textarea {
+    font-family: 'Montserrat', sans-serif;
+    padding: 12px;
+    border: 1px solid #C8B6A6;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #F8F0E3;
+    color: #333333;
+    font-size: 1em;
+    width: 100%; /* ¡CLAVE! Asegura que ocupen todo el ancho disponible */
+    box-sizing: border-box; /* ¡CLAVE! Incluye padding y borde en el width total */
+}
+
+.contact-form-nude textarea {
+    resize: vertical;
+    min-height: 100px; /* Usar min-height en lugar de height para flexibilidad */
+}
+
+.contact-form-nude input:focus,
+.contact-form-nude textarea:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(206, 151, 138, 0.6);
+    border-color: #CE978A;
+    transform: scale(1.01);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.contact-form-nude button[type="submit"] {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #CE978A;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease;
+    align-self: center;
+    width: auto;
+    min-width: 150px;
+}
+
+.contact-form-nude button[type="submit"]:hover {
+    background-color: #B27B6E;
+    transform: scale(1.05);
+}
+.foto-perfil {
+    position: absolute; /* Para colocarla sobre otros elementos */
+    top: 20px; /* Ajusta la distancia desde la parte superior */
+    right: 20px; /* Ajusta la distancia desde la derecha */
+    width: 150px; /* Ajusta el ancho */
+    height: 150px; /* Ajusta la altura */
+    border-radius: 50%; /* Para hacerla circular */
+    object-fit: cover; /* Para que la imagen se ajuste al círculo sin deformarse */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Una sombra suave para que destaque */
+}
