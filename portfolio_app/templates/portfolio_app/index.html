@@ -1,21 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2YKB5QZ8QN"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2YKB5QZ8QN');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portafolio de {{ nombre_portfolio }}</title>
     {% load static %}
     <link rel="icon" href="{% static 'portfolio_app/img/favicon-16x16.png' %}" type="image/png" sizes="16x16">
-    <link rel="stylesheet" href="{% static 'portfolio_app/css/style.css' %}">    
+    <link rel="stylesheet" href="{% static 'portfolio_app/css/style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    {# ELIMINA ESTA LÍNEA DE AQUÍ: <img src="{% static 'portfolio_app/img/perfil-foto-nc.png' %}" alt="Tu Foto" class="foto-perfil"> #}
 </head>
 <body>
     <header>
-        <h1>¡Hola! Soy Nicolás Cano Leal</h1>
-        <p>{{ descripcion_corta }}</p>
+        <div class="header-contenido">
+            <img src="{% static 'portfolio_app/img/perfil-foto-nc.png' %}" alt="Tu Foto" class="foto-perfil">
+            <div class="texto-encabezado">
+                <h1>¡Hola! Soy Nicolás Cano Leal</h1>
+                <p>{{ descripcion_corta }}</p>
+            </div>
+        </div>
         <nav>
             <a href="#proyectos">Proyectos</a>
             <a href="#habilidades">Habilidades</a>
@@ -26,9 +39,8 @@
             <a href="api/schema/swagger-ui/">API Swagger ui</a>
             <a href="api/schema/redoc/">API Redoc</a>
         </nav>
-        {# AÑADE LA IMAGEN DE PERFIL AQUÍ (o en otra sección del body donde la quieras) #}
-        <img src="{% static 'portfolio_app/img/perfil-foto-nc.png' %}" alt="Tu Foto" class="foto-perfil">
     </header>
+
 
     <main>
         <section id="sobre-mi">
@@ -45,7 +57,7 @@
             <h2>Mis Proyectos Destacados</h2>
             <div class="proyectos-grid">
                 {% for project in projects %}
-                    <a href="https://github.com/NicolasAndresCL/API_con_DRF" target="_blank" class="proyecto-card-link">
+                    <a href="{{ project.github_link }}" target="_blank" class="proyecto-card-link">
                         <div class="proyecto-card">
                             <h3>{{ project.title }}</h3>
                             <p>{{ project.description|truncatechars:150 }}</p>
@@ -58,20 +70,20 @@
                             {% endif %}
                         </div>
                     </a>
-                {% empty %} {# Esto maneja el caso de no haber proyectos #}
+                {% empty %}
                     <p>¡Pronto añadiré más proyectos!</p>
                 {% endfor %}
             </div>
-            </section>
-        
+        </section>
+
         <section class="mis-habilidades" id="habilidades">
             <h2>Mis Habilidades</h2>
-            <div class="habilidades-container"> {# Este es tu contenedor Flexbox/Grid #}
+            <div class="habilidades-container">
                 {% for skill in skills %}
-                    <div class="habilidad-item"> {# Cada skill individual #}
+                    <div class="habilidad-item">
                         {{ skill.name }} (Nivel: {{ skill.level }})
                     </div>
-                {% empty %} {# Esto maneja el caso de no haber habilidades #}
+                {% empty %}
                     <p>¡Pronto añadiré mis habilidades!</p>
                 {% endfor %}
             </div>
@@ -84,7 +96,7 @@
                     {% csrf_token %}
                     <p>Si tienes alguna pregunta o quieres colaborar, ¡no dudes en escribirme!</p>
                     <label for="name">Nombre:</label>
-                    <input type="text" id="name" name="name" required=""> {# Añadido id y name para formulario #}
+                    <input type="text" id="name" name="name" required="">
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" required="">
                     <label for="message">Mensaje:</label>
