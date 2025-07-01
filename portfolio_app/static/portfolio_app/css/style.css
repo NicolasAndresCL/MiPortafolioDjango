@@ -121,6 +121,8 @@ h2 {
     /* --- Añadido: Para centrar cada elemento dentro de su celda de grid --- */
     justify-items: center; /* Centra los elementos horizontalmente dentro de cada celda del grid */
     align-items: stretch; /* Asegura que las tarjetas se estiren verticalmente si es necesario */
+    max-width: 900px; /* O el ancho máximo que desees para el contenedor del grid */
+    margin: 0 auto; /* Centra el contenedor del grid */
 }
 
 /* MODIFICADO: Estilos para hacer toda la tarjeta de proyecto clicable */
@@ -128,13 +130,13 @@ h2 {
     text-decoration: none; /* Elimina el subrayado del enlace */
     color: inherit; /* Hereda el color del texto de la tarjeta, no el azul de enlace por defecto */
     display: block; /* Asegura que el enlace ocupe todo el espacio de la tarjeta */
-    max-width: 320px; /* Define un ancho máximo para la tarjeta (ajusta si es necesario) */
-    width: 100%; /* Permite que se adapte a anchos menores */
-    /* --- AÑADIDO: Centra el bloque .proyecto-card-link si tiene menos de max-width --- */
-    margin-left: auto;
-    margin-right: auto;
-    /* --- FIN AÑADIDO --- */
+    /* max-width: 320px; /* Define un ancho máximo para la tarjeta (ajusta si es necesario) */
+    /* width: 100%;  Permite que se adapte a anchos menores */
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Asegura que el link ocupe toda la altura de la celda del grid */
+
 }
 
 .proyecto-card-link:hover .proyecto-card {
@@ -147,7 +149,7 @@ h2 {
 .proyecto-card-link .proyecto-card p,
 .proyecto-card-link .proyecto-card span {
     color: inherit;
-    text-align: center; /* Añadido: Centra el texto dentro de la tarjeta */
+/*text-align: center;  Añadido: Centra el texto dentro de la tarjeta */
 }
 
 
@@ -163,6 +165,8 @@ h2 {
     justify-content: space-between; /* Para distribuir el espacio */
     align-items: center; /* AÑADIDO: Centra los items verticalmente dentro de la card (si es necesario) */
     text-align: center; /* AÑADIDO: Centra el texto por defecto en la card */
+    width: 100%; /* Asegura que la tarjeta ocupe el 100% del ancho de su celda */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho/alto total */
 }
 
 /* --- MODIFICADO: Centrar la imagen dentro de la tarjeta --- */
@@ -172,8 +176,9 @@ h2 {
     display: block; /* La imagen se comporta como un bloque */
     margin-left: auto; /* Margen izquierdo automático */
     margin-right: auto; /* Margen derecho automático */
-    max-width: 250px; /* Asegura que la imagen no se desborde */
+    max-width: 100%; /* Asegura que la imagen no se desborde */
     height: auto; /* Mantiene la proporción de la imagen */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
 }
 
 .boton-interno-proyecto {
@@ -183,7 +188,7 @@ h2 {
     padding: 8px 15px;
     border-radius: 5px;
     text-decoration: none;
-    margin-top: 10px; /* Espacio superior */
+    margin-top: auto; /* Espacio superior */
     transition: background-color 0.3s ease;
     font-size: 0.9em;
 }
@@ -199,6 +204,8 @@ h2 {
     flex-wrap: wrap;
     gap: 10px;
     justify-content: normal; /* AÑADIDO: Centra las habilidades */
+    margin-top: 10px; /* Añadido: Espacio superior para las habilidades */
+    margin-bottom: 10px; /* Añadido: Espacio inferior para las habilidades */
 }
 
 .skills-list li {
@@ -207,6 +214,7 @@ h2 {
     color: #333333; /* TEXTO OSCURO: Color de texto para habilidades */
     padding: 8px 15px;
     border-radius: 5px;
+    white-space: nowrap; /* Evita que el texto de la habilidad se rompa */
 }
 
 /* Sección de Habilidades */
@@ -372,7 +380,17 @@ footer {
     max-width: 600px;
     padding: 0 15px;
 }
-
+/* Media query para pantallas pequeñas (si el grid tiene un minmax muy grande) */
+@media (max-width: 600px) { /* Puedes ajustar este breakpoint */
+    .proyectos-grid {
+        /* Para pantallas muy pequeñas, quizás quieras que sea una sola columna */
+        grid-template-columns: 1fr;
+    }
+    .proyecto-card-link {
+        /* Si solo hay una columna, puede que quieras que ocupe más ancho */
+        max-width: 350px; /* O el ancho que desees para una sola columna */
+    }
+}
 /* Media query para pantallas pequeñas y tablets (hasta 768px) */
 @media (max-width: 768px) {
     .header-contenido {
@@ -435,6 +453,7 @@ footer {
         transform: translateY(0);
     }
 }
+
 .botones-sociales {
   display: flex;
   justify-content: center;
@@ -504,4 +523,91 @@ footer {
   background-color: #8C736A;
   transform: scale(1.03);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+.icono-formulario {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  stroke: white; /* hereda el color del texto */
+  transition: transform 0.3s ease;
+}
+
+.boton-formulario:hover .icono-formulario {
+  transform: translateX(3px);
+}
+
+.navbar-principal {
+  background-color: #DCD7C9;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  padding: 15px 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #6B6D6D;
+  padding: 8px 14px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.nav-links li a:hover {
+  background-color: #CE978A;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* .nav-links li a[target="_blank"] {
+  background-color: #F0EAE4;
+  color: #333;
+  font-weight: 600;
+}
+
+.nav-links li a[target="_blank"]:hover {
+  background-color: #C2AE9F;
+  color: #fff;
+}
+ */
+@media (max-width: 768px) {
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px; /* Separación uniforme entre enlaces */
+  }
+
+  .nav-links li {
+    width: 90%;
+    margin-left: auto;
+    margin-right: 50px;
+  }
+
+  .nav-links li a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    border: 1px solid #C8B6A6;
+    background-color: #F0EAE4;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-links li a:hover {
+    background-color: #CE978A;
+    color: #fff;
+    transform: translateY(-2px);
+  }
 }

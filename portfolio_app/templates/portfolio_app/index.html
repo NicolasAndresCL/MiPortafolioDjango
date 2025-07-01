@@ -15,7 +15,7 @@
     <title>Portafolio de {{ nombre_portfolio }}</title>
     {% load static %}
     <link rel="icon" href="{% static 'portfolio_app/img/favicon-16x16.png' %}" type="image/png" sizes="16x16">
-    <link rel="stylesheet" href="{% static 'portfolio_app/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'portfolio_app/css/style.css' %}?v={% now "U" %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -29,16 +29,19 @@
                 <p>{{ descripcion_corta }}</p>
             </div>
         </div>
-        <nav>
-            <a href="#proyectos">Proyectos</a>
-            <a href="#habilidades">Habilidades</a>
-            <a href="#contacto">Contacto</a>
-            <a href="{% url 'admin:index' %}">Admin</a>
-            <a href="/api/projects/">API Proyectos</a>
-            <a href="/api/skills/">API Habilidades</a>
-            <a href="api/schema/swagger-ui/">API Swagger ui</a>
-            <a href="api/schema/redoc/">API Redoc</a>
+        <nav class="navbar-principal">
+            <ul class="nav-links">
+                <li><a href="#proyectos">Proyectos</a></li>
+                <li><a href="#habilidades">Habilidades</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="{% url 'admin:index' %}" target="_blank">Admin</a></li>
+                <li><a href="/api/projects/" target="_blank">API Proyectos</a></li>
+                <li><a href="/api/skills/" target="_blank">API Habilidades</a></li>
+                <li><a href="/api/schema/swagger-ui/" target="_blank">Swagger UI</a></li>
+                <li><a href="/api/schema/redoc/" target="_blank">Redoc</a></li>
+            </ul>
         </nav>
+
     </header>
 
 
@@ -111,7 +114,15 @@
                     <input type="email" id="email" name="email" required="">
                     <label for="message">Mensaje:</label>
                     <textarea id="message" name="message" required=""></textarea>
-                    <button type="submit" class="boton-formulario">Enviar mensaje</button>
+                    <button type="submit" class="boton-formulario">
+                        <svg class="icono-formulario" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 
+                                00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Enviar mensaje
+                    </button>
+
                 </form>
             </div>
         </section>
