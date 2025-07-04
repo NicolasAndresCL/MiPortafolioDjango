@@ -22,3 +22,15 @@ media/
 
 portfolio_project/settings.py
 portfolio_project/wsgi.py
+
+.vscode/
+*.code-workspace
+
+*.log
+*.tmp
+
+Thumbs.db
+desktop.ini
+
+htmlcov/
+.coverage
