@@ -285,7 +285,6 @@ footer {
     color: #333333; /* TEXTO OSCURO: Texto del footer */
 }
 /* --- Estilos para el Formulario de Contacto (de Uiverse.io, adaptado a los colores nude) --- */
-/* --- Estilos para el Formulario de Contacto (de Uiverse.io, adaptado a los colores nude) --- */
 .contact-form-nude {
     background-color: #EADBC8;
     padding: 30px;
@@ -503,6 +502,66 @@ footer {
 
 .linkedin:hover {
   background-color: #005f8d;
+}
+
+.buttonDownload {
+ isplay: inline-block;
+ position: relative;
+ align-items: center;
+ gap: 10px;
+ padding: 12px 20px;
+ background-color: #4CC713;
+ text-decoration: none;
+ border-radius: 6px;
+ font-weight: bold;
+ font-size: 0.9em;
+ text-align: center;
+ text-indent: 15px;
+ font-family: 'Montserrat', sans-serif;
+ color: white;
+ transition: background-color 0.3s, transform 0.2s;
+}
+
+.buttonDownload:hover {
+ background-color: #45a21a;
+ color: white;
+}
+
+.buttonDownload:before, .buttonDownload:after {
+ content: ' ';
+ display: block;
+ position: absolute;
+ left: 15px;
+ top: 52%;
+}
+
+.buttonDownload:before {
+ width: 10px;
+ height: 2px;
+ border-style: solid;
+ border-width: 0 2px 2px;
+}
+
+.buttonDownload:after {
+ width: 0;
+ height: 0;
+ margin-left: 3px;
+ margin-top: -7px;
+ border-style: solid;
+ border-width: 4px 4px 0 4px;
+ border-color: transparent;
+ border-top-color: inherit;
+ animation: downloadArrow 1s linear infinite;
+ animation-play-state: paused;
+}
+
+.buttonDownload:hover:before {
+ border-color: #cdefbd;
+}
+
+.buttonDownload:hover:after {
+ border-top-color: #cdefbd;
+ animation-play-state: running;
 }
 
 .boton-formulario {

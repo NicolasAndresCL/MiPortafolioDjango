@@ -31,6 +31,7 @@
         </div>
         <nav class="navbar-principal">
             <ul class="nav-links">
+                <li><a href="#sobre-mi">Sobre mí</a></li>
                 <li><a href="#proyectos">Proyectos</a></li>
                 <li><a href="#habilidades">Habilidades</a></li>
                 <li><a href="#contacto">Contacto</a></li>
@@ -41,7 +42,6 @@
                 <li><a href="/api/schema/redoc/" target="_blank">Redoc</a></li>
             </ul>
         </nav>
-
     </header>
 
 
@@ -62,6 +62,9 @@
                 <a href="https://linkedin.com/in/nicolas-andres-cano-leal" target="_blank" class="boton-social linkedin">
                     <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn Logo">
                     LinkedIn
+                </a>
+                <a href="{% static 'portfolio_app/docs/NicolasCano_BackendDeveloper_CV.pdf' %}" target="_blank" class="buttonDownload cv">
+                    Descargar CV
                 </a>
             </div>
 
@@ -116,8 +119,10 @@
                     <textarea id="message" name="message" required=""></textarea>
                     <button type="submit" class="boton-formulario">
                         <svg class="icono-formulario" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0
                                 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                         Enviar mensaje

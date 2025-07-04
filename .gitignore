@@ -19,3 +19,6 @@ staticfiles/
 media/
 
 .env
+
+portfolio_project/settings.py
+portfolio_project/wsgi.py
