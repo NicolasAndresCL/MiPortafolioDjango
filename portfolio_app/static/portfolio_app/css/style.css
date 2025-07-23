@@ -505,7 +505,7 @@ footer {
 }
 
 .buttonDownload {
- isplay: inline-block;
+ display: inline-block;
  position: relative;
  align-items: center;
  gap: 10px;

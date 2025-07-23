@@ -17,6 +17,7 @@ class Skill(models.Model):
     name = models.CharField(max_length=100)
     level = models.IntegerField(default=5) # Nivel de 1 a 10, o porcentaje
     category = models.CharField(max_length=100, blank=True, null=True) # Ej: "Backend", "Frontend", "Database"
-
+    logo = models.ImageField(upload_to="skills/logos/", blank=True, null=True)  # Nuevo campo
+    
     def __str__(self):
         return self.name
