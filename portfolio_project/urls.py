@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
-from portfolio_app.views import ProjectViewSet, SkillViewSet, contacto_api
+from portfolio_app.views import ProjectViewSet, SkillViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-# --- DRF Router para tus ViewSets ---
+
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 router.register(r'skills', SkillViewSet)

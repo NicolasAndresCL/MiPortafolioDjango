@@ -9,10 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['nicolasandrescl.pythonanywhere.com','127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['nicolasandrescl.pythonanywhere.com','www.nicolasandrescl.pythonanywhere.com']
 
 
 
@@ -61,6 +60,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'portfolio_project.wsgi.application'
+
+
 
 
 # Database
@@ -122,16 +123,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly', # Para permitir GET sin token
-                                            # Puedes cambiar esto a IsAuthenticated
-                                            # si necesitas autenticación para los endpoints de la API.
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly', 
+                                            
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     # Si quieres usar autenticación de token, asegúrate de tener 'rest_framework.authtoken'
     # en INSTALLED_APPS y configurarlo aquí.
     'DEFAULT_AUTHENTICATION_CLASSES': [
          'rest_framework.authentication.TokenAuthentication',
-    #     'rest_framework.authentication.SessionAuthentication',
+    
     ]
 }
 
@@ -140,16 +140,16 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     "http://localhost:3000",  
     "http://127.0.0.1:3000",
-    "http://localhost:8000",   # <--- ¡AÑADE ESTO!
-    "http://127.0.0.1:8000",   # <--- ¡AÑADE ESTO!
-    "https://nicolasandrescl.github.io", # Tu frontend en producción
+    "http://localhost:8000",  
+    "http://127.0.0.1:8000",   
+    "https://nicolasandrescl.github.io", 
 ]
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Portafolio API',
     'DESCRIPTION': 'API para gestionar proyectos y habilidades de mi portafolio personal con Django y DRF. Documentación automatizada con drf-spectacular.',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False, # Si quieres servir el archivo schema.json directamente
+    'SERVE_INCLUDE_SCHEMA': False, 
     # 'SWAGGER_UI_SETTINGS': {
     #     'dom_id': '#swagger-ui',
     #     'layout': 'BaseLayout',
