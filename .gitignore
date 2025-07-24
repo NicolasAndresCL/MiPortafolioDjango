@@ -20,7 +20,6 @@ media/
 
 .env
 
-portfolio_project/wsgi.py
 
 .vscode/
 *.code-workspace
