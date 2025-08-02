@@ -76,6 +76,61 @@ POST /api/contacto/
 ```
 Este formulario se conecta con React y dispara send_mail con validación.
 
+
+## 🐛 Debugging real en producción Django + React
+🔍 1. Pantalla en blanco tras integración de frontend
+Síntoma: Vista en blanco sin errores visibles en consola.
+
+Diagnóstico:
+
+Archivos hashificados duplicados en STATIC_ROOT.
+
+index.html mal referenciado o sin ruta estática adecuada.
+
+Assets no linkeados correctamente por manifest.json post-build.
+
+Solución aplicada:
+
+Limpieza de STATIC_ROOT + regeneración de assets vía npm run build.
+
+Validación manual de rutas en HTML y revisión de settings.py.
+
+Verificación de collectstatic y compatibilidad con STATICFILES_DIRS.
+
+## ⚠️ 2. Error MIME en entorno móvil
+Síntoma: Estilos no cargan en dispositivos móviles, consola marca error MIME.
+
+Diagnóstico:
+
+Improper MIME type debido a ruta errónea o archivo vacío.
+
+Confusión entre STATICFILES_DIRS (desarrollo) y STATIC_ROOT (producción).
+
+Solución aplicada:
+
+Revisión de cabeceras en archivos CSS y JS.
+
+Rebuild del frontend asegurando .map y .css válidos.
+
+Ajuste en configuración de Nginx/Gunicorn para servir estáticos correctamente.
+
+## 🖼️ 3. Problemas de visibilidad UX/UI en móvil
+Síntoma: Tarjetas invisibles, texto sin contraste en ciertas resoluciones.
+
+Diagnóstico:
+
+Estilos heredados no aplican correctamente en media queries.
+
+Diferencias en layout y z-index por falta de breakpoints específicos.
+
+Solución aplicada:
+
+Refactor con min-width y max-width en breakpoints claves.
+
+Uso de unidades relativas (em, %) para adaptar espaciado.
+
+Validación visual multiplataforma con inspección móvil en DevTools.
+
 ## 🤝 Contribuciones
 Las contribuciones son bienvenidas. Podés abrir issues o enviar pull requests si querés mejorar la arquitectura, extender los endpoints o documentar nuevas integraciones.
 
