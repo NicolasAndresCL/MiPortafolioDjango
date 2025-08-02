@@ -2,17 +2,22 @@ import os
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+import environ
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
-DEBUG = False
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['nicolasandrescl.pythonanywhere.com','www.nicolasandrescl.pythonanywhere.com']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 
 

@@ -19,7 +19,7 @@ staticfiles/
 media/
 
 .env
-
+.env.*
 
 .vscode/
 *.code-workspace

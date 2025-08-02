@@ -131,6 +131,19 @@ Uso de unidades relativas (em, %) para adaptar espaciado.
 
 Validación visual multiplataforma con inspección móvil en DevTools.
 
+### 🛠️ Gestión dinámica de entorno `.env` con Git hook
+
+- Entorno gestionado con `django-environ` desde `settings.py`.
+- Separación de variables por rama (`.env.main`, `.env.dev`, `.env.dev-config`).
+- Hook `post-checkout` automatiza el uso correcto al cambiar de rama, evitando errores por configuración errónea.
+
+```bash
+# Ejemplo de .git/hooks/post-checkout
+#!/bin/bash
+branch=$(git rev-parse --abbrev-ref HEAD)
+cp .env.$branch .env
+```
+
 ## 🤝 Contribuciones
 Las contribuciones son bienvenidas. Podés abrir issues o enviar pull requests si querés mejorar la arquitectura, extender los endpoints o documentar nuevas integraciones.
 
