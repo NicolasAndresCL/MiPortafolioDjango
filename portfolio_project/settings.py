@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -122,17 +123,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly', 
-                                            
-    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    # Si quieres usar autenticación de token, asegúrate de tener 'rest_framework.authtoken'
-    # en INSTALLED_APPS y configurarlo aquí.
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-         'rest_framework.authentication.TokenAuthentication',
-    
-    ]
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 
@@ -150,25 +152,9 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API para gestionar proyectos y habilidades de mi portafolio personal con Django y DRF. Documentación automatizada con drf-spectacular.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False, 
-    # 'SWAGGER_UI_SETTINGS': {
-    #     'dom_id': '#swagger-ui',
-    #     'layout': 'BaseLayout',
-    #     'deepLinking': True,
-    # },
-    # 'REDOC_UI_SETTINGS': {
-    #     'nativeScrollbars': True,
-    #     'theme': {
-    #         'colors': {
-    #             'primary': {
-    #                 'main': '#61dafb'
-    #             }
-    #         }
-    #     }
-    # },
-    # ... muchas más opciones, revisa la documentación para personalización avanzada
+    
 }
 
-# Configuración de Correo Electrónico
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
