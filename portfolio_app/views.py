@@ -161,3 +161,63 @@ def contacto_api(request):
             return JsonResponse({'status': 'error', 'message': 'Falló el envío'}, status=500)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiExample,
+    OpenApiResponse,
+)
+
+login_example = OpenApiExample(
+    name="Credenciales de acceso",
+    value={"username": "jugador_arcade", "password": "1234seguro"},
+    request_only=True
+)
+
+login_response = OpenApiResponse(
+    response={"access": "jwt-token", "refresh": "jwt-refresh-token"},
+    description="Tokens generados exitosamente"
+)
+
+@extend_schema_view(
+    post=extend_schema(
+        operation_id="login_usuario",
+        summary="Autenticación JWT (Login)",
+        description="Genera tokens de acceso y renovación JWT para usuarios registrados.",
+        request={"application/json": {"username": "string", "password": "string"}},
+        tags=["🔐 Autenticación"],
+        examples=[login_example],
+        responses={200: login_response, 401: OpenApiResponse(description="Credenciales inválidas")}
+    )
+)
+class CustomTokenObtainPairView(TokenObtainPairView):
+    pass
+
+from rest_framework_simplejwt.views import TokenRefreshView
+
+refresh_example = OpenApiExample(
+    name="Token de renovación",
+    value={"refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ..."},
+    request_only=True
+)
+
+refresh_response = OpenApiResponse(
+    response={"access": "jwt-new-access-token"},
+    description="Nuevo token de acceso generado"
+)
+
+@extend_schema_view(
+    post=extend_schema(
+        operation_id="refrescar_token",
+        summary="Renovar token de acceso",
+        description="Usa un refresh token válido para generar uno nuevo sin volver a iniciar sesión.",
+        request={"application/json": {"refresh": "string"}},
+        tags=["🔐 Autenticación"],
+        examples=[refresh_example],
+        responses={200: refresh_response, 401: OpenApiResponse(description="Token expirado o inválido")}
+    )
+)
+class CustomTokenRefreshView(TokenRefreshView):
+    pass
