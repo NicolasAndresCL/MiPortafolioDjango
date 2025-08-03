@@ -11,6 +11,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 import environ
+from django.views.generic.base import RedirectView
+
 
 
 env = environ.Env()
@@ -23,8 +25,6 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'skills', SkillViewSet)
 
 urlpatterns = [
-    path('', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-
     path('admin/', admin.site.urls),
 
     path('api/', include(router.urls)),
@@ -50,4 +50,8 @@ if EMBED_REACT:
     urlpatterns += [
         
         re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
+    ]
+else:
+    urlpatterns += [
+        path('', RedirectView.as_view(url='/swagger/', permanent=False)),
     ]
