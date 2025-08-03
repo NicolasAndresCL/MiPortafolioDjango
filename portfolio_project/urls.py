@@ -10,12 +10,21 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+import environ
+
+
+env = environ.Env()
+environ.Env.read_env()
+
+EMBED_REACT = env.bool('EMBED_REACT', default=False)
 
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 router.register(r'skills', SkillViewSet)
 
 urlpatterns = [
+    path('', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
     path('admin/', admin.site.urls),
 
     path('api/', include(router.urls)),
@@ -37,6 +46,8 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # Añade STATIC_ROOT
 
-urlpatterns += [
-    re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
-]
+if EMBED_REACT:
+    urlpatterns += [
+        
+        re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
+    ]
