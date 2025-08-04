@@ -53,5 +53,5 @@ if EMBED_REACT:
     ]
 else:
     urlpatterns += [
-        path('', RedirectView.as_view(url='/swagger/', permanent=False)),
+        path('', RedirectView.as_view(url='api/schema/swagger-ui/', permanent=False)),
     ]
