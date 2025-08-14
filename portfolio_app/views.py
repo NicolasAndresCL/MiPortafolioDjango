@@ -187,7 +187,7 @@ login_response = OpenApiResponse(
         summary="Autenticación JWT (Login)",
         description="Genera tokens de acceso y renovación JWT para usuarios registrados.",
         request={"application/json": {"username": "string", "password": "string"}},
-        tags=["🔐 Autenticación"],
+        tags=["Autenticación"],
         examples=[login_example],
         responses={200: login_response, 401: OpenApiResponse(description="Credenciales inválidas")}
     )
@@ -214,7 +214,7 @@ refresh_response = OpenApiResponse(
         summary="Renovar token de acceso",
         description="Usa un refresh token válido para generar uno nuevo sin volver a iniciar sesión.",
         request={"application/json": {"refresh": "string"}},
-        tags=["🔐 Autenticación"],
+        tags=["Autenticación"],
         examples=[refresh_example],
         responses={200: refresh_response, 401: OpenApiResponse(description="Token expirado o inválido")}
     )

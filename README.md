@@ -144,6 +144,26 @@ branch=$(git rev-parse --abbrev-ref HEAD)
 cp .env.$branch .env
 ```
 
+## 🧩 Swagger UI Override — Integración Visual Personalizada
+Se ha implementado una personalización completa de la interfaz Swagger UI para la documentación de la API del portafolio, con los siguientes cambios:
+
+✅ Cambios técnicos integrados
+- custom_swagger.html: Template extendido con layout desacoplado, favicon, logo y branding visual
+
+- swagger_custom.css: Estilos oscuros profesionales con encapsulamiento de schemas, colores por método y contraste optimizado
+
+- favicon-32x32.png: Ícono personalizado para pestañas del navegador
+
+- perfil-foto-nc.png: Imagen de branding personal integrada en la interfaz
+
+- settings.py: Actualización del título Swagger a 'Portafolio Backend — Django & DRF API' y configuración de assets estáticos
+
+- urls.py: Ruta para servir el template personalizado de Swagger UI
+
+- views.py: Vista basada en TemplateView para renderizar la documentación extendida
+
+- requirements.txt: Inclusión de drf-spectacular-sidecar para servir assets locales
+
 ## 🤝 Contribuciones
 Las contribuciones son bienvenidas. Podés abrir issues o enviar pull requests si querés mejorar la arquitectura, extender los endpoints o documentar nuevas integraciones.
 
