@@ -13,6 +13,10 @@ from rest_framework_simplejwt.views import (
 import environ
 from django.views.generic.base import RedirectView
 
+from django.views.generic import TemplateView
+
+class CustomSwaggerView(TemplateView):
+    template_name = 'swagger/custom_swagger.html'
 
 
 env = environ.Env()
@@ -32,7 +36,7 @@ urlpatterns = [
     path('api/', include('portfolio_app.urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/swagger-ui/', CustomSwaggerView.as_view(), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

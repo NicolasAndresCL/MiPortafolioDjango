@@ -1,0 +1,230 @@
+/* =============================
+    🎨 Swagger UI - Tema Oscuro Profesional
+    Paleta: Dark Minimal Elegante
+    ============================= */
+:root {
+    --color-bg-primary: #121212;
+    --color-bg-secondary: #1e1e1e;
+    --color-text-primary: #e0e0e0;
+    --color-text-secondary: #bdbdbd;
+    --color-border-subtle: #333333;
+    --color-border-hover: #555555; /* Nuevo color para hover en bordes */
+
+    --color-accent: #0d6efd;
+    --color-accent-light: #5f9cfd;
+
+    --color-get: #4caf50;
+    --color-post: #2196f3;
+    --color-put: #ff9800;
+    --color-delete: #f44336;
+}
+
+/* Fondo global y textos */
+body, html, .swagger-ui {
+    background-color: var(--color-bg-primary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+/* Títulos y Contenedores */
+.swagger-ui .topbar,
+.swagger-ui .information-container hgroup h2,
+.swagger-ui .opblock-tag.no-desc span {
+    color: var(--color-text-primary) !important;
+}
+
+.swagger-ui .scheme-container,
+.swagger-ui .information-container,
+.swagger-ui .opblock,
+.swagger-ui .model-box {
+    background-color: var(--color-bg-secondary) !important;
+    border: 1px solid var(--color-border-subtle) !important;
+    border-radius: 6px;
+}
+
+/* Descripción y textos secundarios */
+.swagger-ui .markdown p,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .model-box p,
+.swagger-ui .prop-type,
+.swagger-ui .parameter__name,
+.swagger-ui .response-col_status {
+    color: var(--color-text-secondary) !important;
+}
+
+/* Links y acentos */
+.swagger-ui a {
+    color: var(--color-accent) !important;
+}
+.swagger-ui a:hover {
+    color: var(--color-accent-light) !important;
+}
+
+/* Botones */
+.swagger-ui .btn {
+    background-color: var(--color-accent) !important;
+    color: #fff !important;
+    border: none !important;
+    transition: background-color 0.3s ease;
+}
+.swagger-ui .btn:hover {
+    background-color: var(--color-accent-light) !important;
+}
+
+/* Colores por método */
+.swagger-ui .opblock.opblock-get { background-color: rgba(76, 175, 80, 0.15) !important; border-color: var(--color-get) !important; }
+.swagger-ui .opblock.opblock-post { background-color: rgba(33, 150, 243, 0.15) !important; border-color: var(--color-post) !important; }
+.swagger-ui .opblock.opblock-put { background-color: rgba(255, 152, 0, 0.15) !important; border-color: var(--color-put) !important; }
+.swagger-ui .opblock.opblock-delete { background-color: rgba(244, 67, 54, 0.15) !important; border-color: var(--color-delete) !important; }
+
+/* Inputs y selects */
+.swagger-ui input, .swagger-ui select, .swagger-ui textarea {
+    background-color: var(--color-bg-primary) !important;
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border-subtle) !important;
+    border-radius: 4px !important;
+}
+.swagger-ui input:focus, .swagger-ui select:focus, .swagger-ui textarea:focus {
+    border-color: var(--color-accent) !important;
+    outline: none !important;
+}
+
+/* Panel de autorización */
+.swagger-ui .auth-wrapper, .swagger-ui .modal-ux {
+    background-color: var(--color-bg-secondary) !important;
+    border: 1px solid var(--color-border-subtle) !important;
+    border-radius: 8px;
+}
+
+/* Código y JSON */
+.swagger-ui .highlight-code, .swagger-ui code {
+    background-color: #1a1a1a !important;
+    color: var(--color-accent-light) !important;
+}
+
+/* Ajuste extra: scrollbars oscuros */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-border-subtle);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+    background-color: var(--color-bg-primary);
+}
+
+/* 📌 Logo flotante */
+img {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    height: 32px;
+    z-index: 9999;
+}
+
+/* Centrar encabezado principal y descripción */
+.swagger-ui .information-container hgroup,
+.swagger-ui .information-container,
+.swagger-ui .information-container hgroup h2,
+.swagger-ui .information-container hgroup .version-stamp,
+.swagger-ui .information-container .base-url,
+.swagger-ui .information-container .markdown {
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.swagger-ui .information-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.swagger-ui .information-container .markdown {
+    max-width: 900px;
+}
+
+span {
+    margin-left: 50px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--color-text-primary) !important;
+}
+
+
+/* ==================================
+    ✨ AJUSTES ESPECÍFICOS PARA SCHEMAS
+    ================================== */
+/* 📦 Contenedor general del schema */
+.swagger-ui .model-container {
+    background-color: var(--color-bg-secondary) !important;
+    border: 1px solid var(--color-border-subtle) !important;
+    border-radius: 8px;
+    margin: 16px 0;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+/* 🧩 Encabezado del schema (control de colapso) */
+.swagger-ui .model-box-control {
+    background-color: var(--color-bg-secondary) !important;
+    border-bottom: 1px solid var(--color-border-subtle) !important;
+    padding: 14px 20px;
+    font-weight: 600;
+    color: var(--color-text-primary) !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.swagger-ui .model-box-control:hover {
+    background-color: #2a2a2a !important;
+    border-color: var(--color-border-hover) !important;
+}
+
+/* 🔽 Icono de colapso */
+.swagger-ui .model-box-control svg {
+    color: var(--color-text-secondary) !important;
+    font-size: 1.2em;
+    transition: transform 0.2s ease-in-out;
+}
+
+.swagger-ui .model-box-control.expanded svg {
+    transform: rotate(90deg);
+}
+
+/* 🧠 Nombre del schema */
+.swagger-ui .model-box-control span {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    color: var(--color-text-primary) !important;
+    margin-left: 0;
+}
+
+/* 📄 Contenido del schema */
+.swagger-ui .model {
+    background-color: var(--color-bg-secondary) !important;
+    padding: 20px;
+    border-top: none !important;
+    border-radius: 0 0 8px 8px;
+    color: var(--color-text-secondary) !important;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* 🧬 Propiedades internas */
+.swagger-ui .model-box {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0;
+}
+
+.swagger-ui .model-box p {
+    margin: 0;
+    padding: 0;
+    color: var(--color-text-secondary) !important;
+}

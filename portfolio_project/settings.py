@@ -4,7 +4,6 @@ from decouple import config
 from datetime import timedelta
 import environ
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
@@ -19,8 +18,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
-
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -30,7 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework', 
     'portfolio_app', 
-    'drf_spectacular', 
+    'drf_spectacular',
+    'drf_spectacular_sidecar', 
     'corsheaders'
 ]
 
@@ -51,7 +49,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR,'static','frontend','dist',),  
+            os.path.join(BASE_DIR,'static','frontend','dist',),
+            os.path.join(BASE_DIR,'templates',),  
+
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -67,20 +67,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'portfolio_project.wsgi.application'
 
-
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -97,8 +89,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -107,23 +97,21 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 EMBED_REACT = env.bool('EMBED_REACT', default=False)
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
-STATICFILES_DIRS = []
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 if EMBED_REACT:
     STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'static', 'frontend', 'dist'))
     STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'static', 'frontend', 'dist', 'assets'))
+    STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'static', 'swagger'))
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -140,7 +128,6 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     "http://localhost:3000",  
@@ -151,11 +138,19 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Portafolio API',
-    'DESCRIPTION': 'API para gestionar proyectos y habilidades de mi portafolio personal con Django y DRF. Documentación automatizada con drf-spectacular.',
+    'TITLE': 'Portafolio Backend — Django & DRF API ',
+    'DESCRIPTION': (
+    "Documentación interactiva y profesional de la API REST de mi portafolio personal, desarrollada con Django, Django REST Framework. "
+    "Incluye autenticación JWT, gestión modular de proyectos, habilidades y contacto, con trazabilidad completa. "
+    "La interfaz Swagger UI ha sido personalizada mediante drf-spectacular y drf-spectacular-sidecar, con override visual desacoplado, estilos técnicos en tonos azules y branding propio. "
+    "Se integran assets locales, favicon, logo y layout extendido para mejorar la experiencia de navegación y presentación multiplataforma. "
+    "Esta API está diseñada para ser reproducible, escalable y lista para entrevistas técnicas internacionales, con enfoque en claridad, seguridad y presentación visual."
+    ),
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False, 
-    
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_SETTINGS': {
+        'displayOperationId': True,
+    },
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
