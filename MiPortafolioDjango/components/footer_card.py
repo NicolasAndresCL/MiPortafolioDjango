@@ -17,11 +17,6 @@ def footer_card():
                     href="https://www.linkedin.com/in/nicolascano-leal",
                     is_external=True
                 ),
-                rx.link(
-                    rx.icon(tag="dev_to", size=32),
-                    href="https://dev.to/nicolasandrescl",
-                    is_external=True
-                ),
                 spacing="4"
             ),
             rx.text(
@@ -31,13 +26,5 @@ def footer_card():
             ),
             spacing="4"
         ),
-        style=footer_styles
+        **footer_card_styles
     )
-
-# mi_portafolio/styles.py
-# (Necesitas crear este archivo para los estilos de Tailwind)
-footer_styles = {
-    "bg": "rgb(15, 23, 42)", # bg-gray-900 en Tailwind
-    "color": "rgb(209, 213, 219)", # text-gray-300
-    "py": "8"
-}

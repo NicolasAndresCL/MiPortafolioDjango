@@ -3,11 +3,41 @@ import reflex as rx
 def project_card(project):
     return rx.box(
         rx.vstack(
-            rx.heading(project.title, size="1", text_align="center"),
-            rx.image(src=project.image, alt=f"Imagen del proyecto {project.title}"),
-            rx.text(project.description, color="gray.300", font_size="sm"),
-            rx.text(f"Tecnologías: {project.technologies}", color="gray.400", font_size="xs"),
-            rx.link("Ir a GitHub", href=project.github_link, is_external=True),
+            rx.heading(
+                project.get("title", "Sin título"), 
+                size="3",  # Tamaño más apropiado para cards
+                color="white",
+                text_align="center"
+            ),
+            rx.image(
+                src=project.get("image", ""),
+                alt=f"Imagen del proyecto {project.get('title', '')}",
+                height="200px",
+                object_fit="cover",
+                border_radius="md"
+            ),
+            rx.text(
+                project.get("description", ""),
+                color="gray.300",
+                font_size="sm",
+                text_align="justify"
+            ),
+            rx.text(
+                f"Tecnologías: {project.get('technologies', 'No especificadas')}",
+                color="gray.400",
+                font_size="xs"
+            ),
+            rx.link(
+                rx.hstack(
+                    rx.icon(tag="github", size=16),
+                    rx.text("Ver en GitHub"),
+                    spacing="2"
+                ),
+                href=project.get("github_link", "#"),
+                is_external=True,
+                color="orange.500",
+                _hover={"color": "orange.400"}
+            ),
             spacing="4",
             align="stretch",
         ),

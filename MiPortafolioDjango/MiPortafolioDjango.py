@@ -14,8 +14,8 @@ from MiPortafolioDjango.components.section_title import section_title
 # 🌀 Loader y errores
 def loading_view():
     return rx.center(
-        rx.spinner(size="3", color="orange"),
-        rx.text("Cargando datos...", mt=4),
+        rx.spinner(size="3", color="orange.500"),
+        rx.text("Cargando datos...", mt=4, color="gray.300"),
         height="80vh"
     )
 
@@ -30,9 +30,13 @@ def proyectos_section():
     return rx.box(
         section_title("Proyectos destacados"),
         rx.cond(
-            State.projects.length() > 0,
-            carrusel_projects(State.projects),
-            rx.text("¡Pronto añadiré más proyectos!", text_align="center", color="gray.500")
+            ~State.loading,
+            rx.cond(
+                State.projects,
+                carrusel_projects(State.projects),
+                rx.text("¡Pronto añadiré más proyectos!", text_align="center", color="gray.500")
+            ),
+            rx.spinner(size="3", color="orange.500")
         ),
         id="Proyectos"
     )
@@ -41,9 +45,13 @@ def habilidades_section():
     return rx.box(
         section_title("Habilidades destacadas"),
         rx.cond(
-            State.skills.length() > 0,
-            skills_carousel(State.skills),
-            rx.text("¡Pronto añadiré más habilidades!", text_align="center", color="gray.500")
+            ~State.loading,
+            rx.cond(
+                State.skills,
+                skills_carousel(State.skills),
+                rx.text("¡Pronto añadiré más habilidades!", text_align="center", color="gray.500")
+            ),
+            rx.spinner(size="3", color="orange.500")
         ),
         id="Habilidades"
     )
@@ -56,43 +64,51 @@ def contacto_section():
     )
 
 # 🏠 Página principal
-def home_page():
-    return rx.box(
-        rx.vstack(
-            rx.cond(
-                State.loading,
-                loading_view(),
+def index():
+    return rx.theme(
+        rx.box(
+            rx.vstack(
                 rx.cond(
-                    State.error,
-                    error_view(),
-                    rx.vstack(
-                        titulo_card(),
-                        button_group(),
-                        rx.box(sobre_mi(), id="Sobre-mi"),
-                        proyectos_section(),
-                        habilidades_section(),
-                        contacto_section(),
-                        rx.spacer(height="64px"),
-                        footer_card(),
-                        spacing="6",
-                        align="stretch"
+                    State.loading,
+                    loading_view(),
+                    rx.cond(
+                        State.error,
+                        error_view(),
+                        rx.vstack(
+                            titulo_card(),
+                            button_group(),
+                            rx.box(sobre_mi(), id="Sobre-mi"),
+                            proyectos_section(),
+                            habilidades_section(),
+                            contacto_section(),
+                            rx.spacer(height="64px"),
+                            footer_card(),
+                            spacing="6",
+                            align="stretch"
+                        )
                     )
                 )
-            )
+            ),
+            max_w="960px",
+            mx="auto",
+            px=4,
+            py=12,
         ),
-        max_w="960px",
-        mx="auto",
-        px=4,
-        py=12,
+        appearance="dark",
+        accent_color="orange",
+        on_load=State.on_load,
     )
 
 app = rx.App(
-    style={"font_family": "Inter, sans-serif"},
+    style={
+        "font_family": "Inter, sans-serif",
+        "background_color": "black",
+        "color": "white",
+    },
     theme=rx.theme(
         appearance="dark",
-        radius="large",
         accent_color="orange",
     ),
 )
 
-app.add_page(home_page, route="/", title="Mi Portafolio — Nicolás Cano")
+app.add_page(index, route="/", title="Mi Portafolio — Nicolás Cano")
