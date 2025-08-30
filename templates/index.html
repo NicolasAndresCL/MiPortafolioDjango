@@ -3,16 +3,20 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="{% static 'perfil-foto-nc.png' %}" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'frontend/dist/assets/favicon.svg' %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portafolio Nicolás Cano Leal</title>
-    <script type="module" crossorigin src="{% static 'index-XYZ.js' %}"></script>
-    <link rel="stylesheet" crossorigin href="{% static 'index-XYZ.css' %}">
+    <script type="module" crossorigin src="{% static 'frontend/dist/assets/index-CXtfPsGf.js' %}"></script>
+    <link rel="stylesheet" crossorigin href="{% static 'frontend/dist/assets/index-CoJVpK78.css' %}">
   </head>
   <body>
     <div id="root"></div>
 
-    <a href="{% static 'NicolasCano_BackendDeveloper_CV.pdf' %}" download>
+    <!-- ✅ Foto de perfil -->
+    <img src="{% static 'frontend/dist/perfil-foto-nc.png' %}" alt="Foto de Nicolás Cano" />
+
+    <!-- ✅ CV para descarga -->
+    <a href="{% static 'frontend/dist/NicolasCano_BackendDeveloper_CV.pdf' %}" download>
       Descargar CV →
     </a>
   </body>
