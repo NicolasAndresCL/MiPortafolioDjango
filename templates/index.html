@@ -1,14 +1,18 @@
 {% load static %}
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="{% static 'frontend/dist/assets/favicon.svg' %}" />
+    <link rel="icon" type="image/png" href="{% static 'frontend/dist/favicon.png' %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portafolio Nicolás Cano Leal</title>
-    <script type="module" crossorigin src="{% static 'frontend/dist/assets/index-sMA4kRgk.js' %}"></script>
-    <link rel="stylesheet" crossorigin href="{% static 'frontend/dist/assets/index-CoJVpK78.css' %}">
+    <title>Portafolio — Nicolás Cano Leal</title>
+    {% if vite_js %}
+      <script type="module" crossorigin src="{% static 'frontend/dist/' %}{{ vite_js }}"></script>
+    {% endif %}
+    {% if vite_css %}
+      <link rel="stylesheet" crossorigin href="{% static 'frontend/dist/' %}{{ vite_css }}">
+    {% endif %}
   </head>
   <body>
     <div id="root"></div>
