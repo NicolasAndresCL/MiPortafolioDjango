@@ -1,171 +1,154 @@
+# Portafolio Backend — Django REST Framework
 
-# 🧠 Mi Portafolio Personal – Backend Django & DRF (API para React Frontend)
+Backend modular de mi portafolio personal, construido con **Django 5** y **Django REST Framework**. Expone una API pública y documentada para gestionar proyectos, habilidades y mensajes de contacto, integrada con un frontend en **React/Vite**.
 
-Este repositorio contiene el backend modular de mi portafolio personal, construido con **Django** y **Django REST Framework**. Expone una API pública y documentada para gestionar mis proyectos, habilidades y mensajes de contacto, integrada con un frontend en **React/Vite/Tailwind**.
-
-> ✅ Este backend reemplaza la versión anterior basada en Django Templates.
-> 🔁 En producción será consumido por el nuevo frontend React.
+Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Documentación: `/api/schema/swagger-ui/`
 
 ---
 
-## 🚀 Características principales
+## Stack
 
-- ✅ **Arquitectura modular por dominio** (apps desacopladas para `projects`, `skills`, `contact`)
-- 🛠️ **Endpoints RESTful con DRF ViewSets** (`ProjectViewSet`, `SkillViewSet`)  
-- 📫 **Vista personalizada `contacto_api`** con `send_mail` para recibir mensajes
-- 🔐 Autenticación con token DRF (solo escritura protegida)
-- 📚 **Swagger/OpenAPI** con DRF Spectacular y `@extend_schema_view` para documentación
-- 🎨 Soporte para imágenes en proyectos y logos de habilidades
-- ⚙️ Configuración segura con `.env` y `python-decouple`
-- 📦 Desplegado en [PythonAnywhere](https://www.pythonanywhere.com/)
-
----
-
-## 🌐 Endpoints principales
-
-| Endpoint                      | Propósito                    |
-|------------------------------|------------------------------|
-| `/api/projects/`             | CRUD de proyectos            |
-| `/api/skills/`               | CRUD de habilidades          |
-| `/api/contacto/`            | Envío de formulario de contacto |
-| `/api/schema/swagger-ui/`   | Documentación interactiva    |
-| `/admin/`                    | Panel administrativo Django  |
+| Tecnología | Uso |
+|---|---|
+| **Django 5.2** | Framework web y ORM |
+| **Django REST Framework** | ViewSets, serializers, permisos |
+| **drf-spectacular** | OpenAPI 3 + Swagger UI personalizado |
+| **SimpleJWT** | Autenticación JWT (acceso 30 min, refresh 1 día) |
+| **django-environ** | Variables de entorno desde `.env` |
+| **Pillow** | Imágenes de proyectos y logos de habilidades |
+| **SQLite** | Base de datos (local y producción PythonAnywhere) |
 
 ---
 
-## 🧪 Tests
+## Endpoints
+
+| Endpoint | Método | Descripción |
+|---|---|---|
+| `/api/projects/` | GET | Lista proyectos (público) |
+| `/api/projects/{id}/` | GET | Detalle de proyecto |
+| `/api/skills/` | GET | Lista habilidades (público) |
+| `/api/contacto/` | POST | Recibe mensaje del formulario de contacto |
+| `/api/schema/swagger-ui/` | GET | Documentación interactiva |
+| `/api/schema/redoc/` | GET | Documentación ReDoc |
+| `/api/token/` | POST | Login JWT |
+| `/api/token/refresh/` | POST | Renovar token |
+| `/admin/` | GET | Panel administrativo |
+
+Escritura (POST/PUT/DELETE) requiere autenticación JWT.
+
+---
+
+## Settings modular
+
+```
+portfolio_project/settings/
+├── base.py         # Configuración compartida (apps, middleware, DRF, JWT, email)
+├── development.py  # DEBUG=True, email por consola, CORS local
+├── production.py   # DEBUG=False, CORS desde env, headers de seguridad
+└── testing.py      # SQLite en memoria, sin .env requerido
+```
+
+`manage.py` usa `settings.development` por defecto.
+`wsgi.py` usa `settings.production` por defecto.
+
+---
+
+## Variables de entorno
+
+Crea un `.env` en la raíz del backend (ver `.env.example`):
 
 ```bash
-python manage.py test portfolio_app
+SECRET_KEY=tu-clave-secreta
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+EMBED_REACT=False
+
+EMAIL_HOST_USER=tu@gmail.com
+EMAIL_HOST_PASSWORD=xxxx-xxxx-xxxx-xxxx
+DEFAULT_FROM_EMAIL=tu@gmail.com
+CONTACT_RECIPIENT_EMAIL=tu@gmail.com
 ```
-- Incluye tests unitarios para modelos Project y Skill.
 
-- Preparado para extensión con tests funcionales de API.
+`EMBED_REACT=True` sirve el build de React desde `/`. Con `False` redirige a Swagger UI.
 
-## 📸 Captura referencial
+---
 
-- 🔧 Instalación local
-```
-bash
-git clone https://github.com/NicolasAndresCL/MiPortafolioDjango.git
-cd MiPortafolioDjango
-python -m venv .venv
-source .venv/bin/activate
+## Correr en local
+
+```bash
+# Activar entorno virtual
+.\env\Scripts\Activate.ps1        # Windows
+source env/bin/activate            # Linux/Mac
+
+# Instalar dependencias
 pip install -r requirements.txt
-```
-- Crear .env con tus variables:
 
-```
-env
-SECRET_KEY='...'
-EMAIL_HOST_PASSWORD='...'
-```
-- Migrar y ejecutar:
-```
-bash
+# Aplicar migraciones
 python manage.py migrate
+
+# Iniciar servidor
 python manage.py runserver
 ```
-## 🛰️ Despliegue
-Este backend está desplegado actualmente en PythonAnywhere y será la base del nuevo portafolio React/Vite. La integración entre frontend y backend se realiza mediante fetch API a los endpoints REST.
 
-## 📬 Contacto y mensajes
-Los usuarios pueden enviar mensajes desde el frontend a través del endpoint:
-```
-POST /api/contacto/
-```
-Este formulario se conecta con React y dispara send_mail con validación.
+Backend disponible en **http://localhost:8000**
 
-
-## 🐛 Debugging real en producción Django + React
-🔍 1. Pantalla en blanco tras integración de frontend
-Síntoma: Vista en blanco sin errores visibles en consola.
-
-Diagnóstico:
-
-Archivos hashificados duplicados en STATIC_ROOT.
-
-index.html mal referenciado o sin ruta estática adecuada.
-
-Assets no linkeados correctamente por manifest.json post-build.
-
-Solución aplicada:
-
-Limpieza de STATIC_ROOT + regeneración de assets vía npm run build.
-
-Validación manual de rutas en HTML y revisión de settings.py.
-
-Verificación de collectstatic y compatibilidad con STATICFILES_DIRS.
-
-## ⚠️ 2. Error MIME en entorno móvil
-Síntoma: Estilos no cargan en dispositivos móviles, consola marca error MIME.
-
-Diagnóstico:
-
-Improper MIME type debido a ruta errónea o archivo vacío.
-
-Confusión entre STATICFILES_DIRS (desarrollo) y STATIC_ROOT (producción).
-
-Solución aplicada:
-
-Revisión de cabeceras en archivos CSS y JS.
-
-Rebuild del frontend asegurando .map y .css válidos.
-
-Ajuste en configuración de Nginx/Gunicorn para servir estáticos correctamente.
-
-## 🖼️ 3. Problemas de visibilidad UX/UI en móvil
-Síntoma: Tarjetas invisibles, texto sin contraste en ciertas resoluciones.
-
-Diagnóstico:
-
-Estilos heredados no aplican correctamente en media queries.
-
-Diferencias en layout y z-index por falta de breakpoints específicos.
-
-Solución aplicada:
-
-Refactor con min-width y max-width en breakpoints claves.
-
-Uso de unidades relativas (em, %) para adaptar espaciado.
-
-Validación visual multiplataforma con inspección móvil en DevTools.
-
-### 🛠️ Gestión dinámica de entorno `.env` con Git hook
-
-- Entorno gestionado con `django-environ` desde `settings.py`.
-- Separación de variables por rama (`.env.main`, `.env.dev`, `.env.dev-config`).
-- Hook `post-checkout` automatiza el uso correcto al cambiar de rama, evitando errores por configuración errónea.
+Para crear un superusuario y acceder al admin:
 
 ```bash
-# Ejemplo de .git/hooks/post-checkout
-#!/bin/bash
-branch=$(git rev-parse --abbrev-ref HEAD)
-cp .env.$branch .env
+python manage.py createsuperuser
 ```
 
-## 🧩 Swagger UI Override — Integración Visual Personalizada
-Se ha implementado una personalización completa de la interfaz Swagger UI para la documentación de la API del portafolio, con los siguientes cambios:
+---
 
-✅ Cambios técnicos integrados
-- custom_swagger.html: Template extendido con layout desacoplado, favicon, logo y branding visual
+## Tests
 
-- swagger_custom.css: Estilos oscuros profesionales con encapsulamiento de schemas, colores por método y contraste optimizado
+```bash
+python manage.py test portfolio_app --settings=portfolio_project.settings.testing
+```
 
-- favicon-32x32.png: Ícono personalizado para pestañas del navegador
+Suite actual: **24 tests**
 
-- perfil-foto-nc.png: Imagen de branding personal integrada en la interfaz
+| Clase | Tests |
+|---|---|
+| `ProjectModelTest` | Creación, `__str__`, campos opcionales |
+| `SkillModelTest` | Creación, `__str__`, nivel por defecto, categoría opcional |
+| `ProjectAPITest` | List, retrieve, ordenamiento, auth requerida para crear |
+| `SkillAPITest` | List, retrieve, ordenamiento por nivel, auth requerida para crear |
+| `ContactAPITest` | Éxito, email enviado, campos faltantes, JSON inválido, solo POST |
 
-- settings.py: Actualización del título Swagger a 'Portafolio Backend — Django & DRF API' y configuración de assets estáticos
+---
 
-- urls.py: Ruta para servir el template personalizado de Swagger UI
+## CI/CD
 
-- views.py: Vista basada en TemplateView para renderizar la documentación extendida
+**`.github/workflows/ci.yml`** — en cada push/PR:
+- Python 3.12, instala dependencias, corre los 24 tests
 
-- requirements.txt: Inclusión de drf-spectacular-sidecar para servir assets locales
+**`.github/workflows/deploy.yml`** — en push a `main`:
+- SSH a PythonAnywhere: `git pull`, `pip install`, `migrate`, `collectstatic`
+- Recarga la webapp via PythonAnywhere API
 
-## 🤝 Contribuciones
-Las contribuciones son bienvenidas. Podés abrir issues o enviar pull requests si querés mejorar la arquitectura, extender los endpoints o documentar nuevas integraciones.
+Secrets requeridos en GitHub:
 
-## 📄 Licencia
-Este proyecto está bajo licencia MIT.	
+| Secret | Descripción |
+|---|---|
+| `PA_USERNAME` | Usuario de PythonAnywhere |
+| `PA_PASSWORD` | Contraseña de PythonAnywhere |
+| `PA_API_TOKEN` | API Token (Account → API Token en PA) |
+
+---
+
+## Despliegue en PythonAnywhere
+
+1. Clona el repo en `/home/nicolasandrescl/Portafolio/`
+2. Crea el entorno virtual e instala `requirements.txt`
+3. Configura el archivo WSGI del panel de PA apuntando a `wsgi_pythonanywhere.py`
+4. Agrega las variables de entorno en el `.env` del servidor
+5. Ejecuta `python manage.py migrate` y `python manage.py collectstatic`
+6. Recarga la webapp desde el panel
+
+Con CI/CD configurado, los pasos 1 y en adelante se automatizan en cada `git push` a `main`.
+
+---
+
+**Nicolás Andrés Cano Leal**
+LiveOps & BizOps | Python Backend Developer | Data Automation
