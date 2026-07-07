@@ -1,5 +1,8 @@
 env/
 
+# Guía interna para desarrollo asistido por IA (no versionar)
+CLAUDE.md
+
 # Archivos de Python
 *.pyc
 __pycache__/

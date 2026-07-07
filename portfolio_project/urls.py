@@ -7,7 +7,12 @@ from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
 
-from portfolio_app.views import ProjectViewSet, SkillViewSet
+from portfolio_app.views import (
+    ProjectViewSet,
+    SkillViewSet,
+    ExperienceViewSet,
+    ExperienceHighlightViewSet,
+)
 
 
 class CustomSwaggerView(TemplateView):
@@ -17,6 +22,8 @@ class CustomSwaggerView(TemplateView):
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 router.register(r'skills', SkillViewSet)
+router.register(r'experience', ExperienceViewSet)
+router.register(r'experience-highlights', ExperienceHighlightViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

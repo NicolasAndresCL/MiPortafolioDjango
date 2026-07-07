@@ -1,6 +1,6 @@
 # Portafolio Backend — Django REST Framework
 
-Backend modular de mi portafolio personal, construido con **Django 5** y **Django REST Framework**. Expone una API pública y documentada para gestionar proyectos, habilidades y mensajes de contacto, integrada con un frontend en **React/Vite**.
+Backend modular de mi portafolio personal, construido con **Django 5** y **Django REST Framework**. Expone una API pública y documentada para gestionar proyectos, habilidades, experiencia laboral y mensajes de contacto, integrada con un frontend en **React/Vite**.
 
 Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Documentación: `/api/schema/swagger-ui/`
 
@@ -27,6 +27,8 @@ Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Do
 | `/api/projects/` | GET | Lista proyectos (público) |
 | `/api/projects/{id}/` | GET | Detalle de proyecto |
 | `/api/skills/` | GET | Lista habilidades (público) |
+| `/api/experience/` | GET | Lista experiencia laboral con highlights anidados (público) |
+| `/api/experience-highlights/` | GET | Gestión individual de highlights de experiencia |
 | `/api/contacto/` | POST | Recibe mensaje del formulario de contacto |
 | `/api/schema/swagger-ui/` | GET | Documentación interactiva |
 | `/api/schema/redoc/` | GET | Documentación ReDoc |
@@ -106,14 +108,18 @@ python manage.py createsuperuser
 python manage.py test portfolio_app --settings=portfolio_project.settings.testing
 ```
 
-Suite actual: **24 tests**
+Suite actual: **40 tests**
 
 | Clase | Tests |
 |---|---|
 | `ProjectModelTest` | Creación, `__str__`, campos opcionales |
 | `SkillModelTest` | Creación, `__str__`, nivel por defecto, categoría opcional |
+| `ExperienceModelTest` | Creación, `is_current` según `end_date`, `__str__`, ordenamiento |
+| `ExperienceHighlightModelTest` | Creación + relación, ordenamiento, `__str__` |
 | `ProjectAPITest` | List, retrieve, ordenamiento, auth requerida para crear |
 | `SkillAPITest` | List, retrieve, ordenamiento por nivel, auth requerida para crear |
+| `ExperienceAPITest` | List, retrieve con highlights anidados, `is_current`, auth, ordenamiento |
+| `ExperienceHighlightAPITest` | List, retrieve, auth requerida para crear, ordenamiento |
 | `ContactAPITest` | Éxito, email enviado, campos faltantes, JSON inválido, solo POST |
 
 ---
@@ -121,7 +127,7 @@ Suite actual: **24 tests**
 ## CI/CD
 
 **`.github/workflows/ci.yml`** — en cada push/PR:
-- Python 3.12, instala dependencias, corre los 24 tests
+- Python 3.12, instala dependencias, corre los 40 tests
 
 **`.github/workflows/deploy.yml`** — en push a `main`:
 - SSH a PythonAnywhere: `git pull`, `pip install`, `migrate`, `collectstatic`

@@ -15,8 +15,13 @@ from drf_spectacular.utils import (
 from rest_framework import viewsets
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .models import Project, Skill
-from .serializers import ProjectSerializer, SkillSerializer
+from .models import Project, Skill, Experience, ExperienceHighlight
+from .serializers import (
+    ProjectSerializer,
+    SkillSerializer,
+    ExperienceSerializer,
+    ExperienceHighlightSerializer,
+)
 
 
 @extend_schema_view(
@@ -97,6 +102,86 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all().order_by('-level')
     serializer_class = SkillSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Experiencia"],
+        summary="Obtener listado de experiencia laboral",
+        responses={200: OpenApiResponse(response=ExperienceSerializer(many=True))},
+    ),
+    create=extend_schema(
+        tags=["Experiencia"],
+        summary="Crear una nueva experiencia laboral",
+        request=ExperienceSerializer,
+        responses={201: OpenApiResponse(response=ExperienceSerializer)},
+    ),
+    retrieve=extend_schema(
+        tags=["Experiencia"],
+        summary="Obtener detalle de una experiencia por ID",
+        responses={200: OpenApiResponse(response=ExperienceSerializer)},
+    ),
+    update=extend_schema(
+        tags=["Experiencia"],
+        summary="Actualizar una experiencia completa",
+        request=ExperienceSerializer,
+        responses={200: OpenApiResponse(response=ExperienceSerializer)},
+    ),
+    partial_update=extend_schema(
+        tags=["Experiencia"],
+        summary="Actualizar parcialmente una experiencia",
+        request=ExperienceSerializer,
+        responses={200: OpenApiResponse(response=ExperienceSerializer)},
+    ),
+    destroy=extend_schema(
+        tags=["Experiencia"],
+        summary="Eliminar una experiencia",
+        responses={204: OpenApiResponse(description="Experiencia eliminada exitosamente")},
+    ),
+)
+class ExperienceViewSet(viewsets.ModelViewSet):
+    queryset = Experience.objects.all().prefetch_related('highlights').order_by('-start_date')
+    serializer_class = ExperienceSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        tags=["Experiencia"],
+        summary="Obtener listado de highlights de experiencia",
+        responses={200: OpenApiResponse(response=ExperienceHighlightSerializer(many=True))},
+    ),
+    create=extend_schema(
+        tags=["Experiencia"],
+        summary="Crear un highlight asociado a una experiencia",
+        request=ExperienceHighlightSerializer,
+        responses={201: OpenApiResponse(response=ExperienceHighlightSerializer)},
+    ),
+    retrieve=extend_schema(
+        tags=["Experiencia"],
+        summary="Obtener detalle de un highlight por ID",
+        responses={200: OpenApiResponse(response=ExperienceHighlightSerializer)},
+    ),
+    update=extend_schema(
+        tags=["Experiencia"],
+        summary="Actualizar un highlight completo",
+        request=ExperienceHighlightSerializer,
+        responses={200: OpenApiResponse(response=ExperienceHighlightSerializer)},
+    ),
+    partial_update=extend_schema(
+        tags=["Experiencia"],
+        summary="Actualizar parcialmente un highlight",
+        request=ExperienceHighlightSerializer,
+        responses={200: OpenApiResponse(response=ExperienceHighlightSerializer)},
+    ),
+    destroy=extend_schema(
+        tags=["Experiencia"],
+        summary="Eliminar un highlight",
+        responses={204: OpenApiResponse(description="Highlight eliminado exitosamente")},
+    ),
+)
+class ExperienceHighlightViewSet(viewsets.ModelViewSet):
+    queryset = ExperienceHighlight.objects.all().order_by('order', 'id')
+    serializer_class = ExperienceHighlightSerializer
 
 
 @extend_schema(
