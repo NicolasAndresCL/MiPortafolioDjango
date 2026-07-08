@@ -1,23 +1,61 @@
 import os
 from pathlib import Path
 from datetime import timedelta
-import environ
+
+from typing import Annotated
+
+import dj_database_url
+from pydantic import field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    EMBED_REACT=(bool, False),
-)
 
-_env_file = os.path.join(BASE_DIR, '.env')
-if os.path.exists(_env_file):
-    environ.Env.read_env(_env_file)
+class Settings(BaseSettings):
+    """Configuración tipada y validada, leída desde el entorno / .env."""
 
-SECRET_KEY = env('SECRET_KEY', default='')
-DEBUG = env('DEBUG')
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
-EMBED_REACT = env.bool('EMBED_REACT', default=False)
+    model_config = SettingsConfigDict(
+        env_file=os.path.join(BASE_DIR, '.env'),
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra='ignore',
+    )
+
+    SECRET_KEY: str = ''
+    DEBUG: bool = False
+    ALLOWED_HOSTS: Annotated[list[str], NoDecode] = []
+    EMBED_REACT: bool = False
+
+    DATABASE_URL: str = ''
+
+    CORS_ALLOWED_ORIGINS: Annotated[list[str], NoDecode] = []
+
+    EMAIL_HOST_USER: str = ''
+    EMAIL_HOST_PASSWORD: str = ''
+    DEFAULT_FROM_EMAIL: str = ''
+    CONTACT_RECIPIENT_EMAIL: str = ''
+
+    # Flags de seguridad HTTPS — se aplican en settings.production (gated por entorno)
+    SECURE_SSL_REDIRECT: bool = False
+    SECURE_HSTS_SECONDS: int = 0
+    SESSION_COOKIE_SECURE: bool = False
+    CSRF_COOKIE_SECURE: bool = False
+
+    @field_validator('ALLOWED_HOSTS', 'CORS_ALLOWED_ORIGINS', mode='before')
+    @classmethod
+    def _split_csv(cls, value):
+        # Acepta CSV ("a,b,c") además de JSON, por compatibilidad con el .env existente.
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(',') if item.strip()]
+        return value
+
+
+conf = Settings()
+
+SECRET_KEY = conf.SECRET_KEY
+DEBUG = conf.DEBUG
+ALLOWED_HOSTS = conf.ALLOWED_HOSTS
+EMBED_REACT = conf.EMBED_REACT
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -36,6 +74,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,12 +107,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'portfolio_project.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# PostgreSQL si hay DATABASE_URL; si no, SQLite (preserva el deploy en PythonAnywhere).
+if conf.DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(conf.DATABASE_URL, conn_max_age=600),
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -110,6 +155,18 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '60/min',
+        'user': '300/min',
+        'login': '10/min',
+    },
+    'EXCEPTION_HANDLER': 'portfolio_app.exceptions.custom_exception_handler',
 }
 
 SIMPLE_JWT = {
@@ -138,7 +195,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
-CONTACT_RECIPIENT_EMAIL = env('CONTACT_RECIPIENT_EMAIL', default=EMAIL_HOST_USER)
+EMAIL_HOST_USER = conf.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = conf.EMAIL_HOST_PASSWORD
+DEFAULT_FROM_EMAIL = conf.DEFAULT_FROM_EMAIL or conf.EMAIL_HOST_USER
+CONTACT_RECIPIENT_EMAIL = conf.CONTACT_RECIPIENT_EMAIL or conf.EMAIL_HOST_USER

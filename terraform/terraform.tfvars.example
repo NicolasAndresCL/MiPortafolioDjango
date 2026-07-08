@@ -1,0 +1,9 @@
+# Copia a terraform.tfvars y completa con valores reales (no versionar el .tfvars real).
+ami_id      = "ami-0xxxxxxxxxxxxxxxx"   # Ubuntu 22.04 LTS en tu región
+key_name    = "mi-keypair"
+db_password = "cambia-esta-password"
+secret_key  = "una-secret-key-fuerte-de-al-menos-32-chars"
+allowed_hosts = "mi-dominio.com,1.2.3.4"
+# aws_region        = "us-east-1"
+# instance_type     = "t3.micro"
+# db_instance_class = "db.t3.micro"

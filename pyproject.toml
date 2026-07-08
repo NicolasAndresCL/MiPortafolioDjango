@@ -1,0 +1,11 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "portfolio_project.settings.testing"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "--cov=portfolio_app --cov-report=term-missing --cov-report=xml"
+filterwarnings = [
+    "ignore:No directory at:UserWarning",
+]
+
+[tool.coverage.run]
+source = ["portfolio_app"]
+omit = ["*/migrations/*", "*/tests.py"]

@@ -12,6 +12,7 @@ from portfolio_app.views import (
     SkillViewSet,
     ExperienceViewSet,
     ExperienceHighlightViewSet,
+    health_check,
 )
 
 
@@ -26,6 +27,7 @@ router.register(r'experience', ExperienceViewSet)
 router.register(r'experience-highlights', ExperienceHighlightViewSet)
 
 urlpatterns = [
+    path('healthz/', health_check, name='healthz'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/', include('portfolio_app.urls')),

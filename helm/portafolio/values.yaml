@@ -1,0 +1,31 @@
+replicaCount: 2
+
+image:
+  repository: ghcr.io/nicolasandrescl/portafolio-backend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+api:
+  port: 8000
+
+# Configuración no sensible (va a un ConfigMap)
+config:
+  DEBUG: "False"
+  ALLOWED_HOSTS: "*"
+  DJANGO_SETTINGS_MODULE: portfolio_project.settings.production
+
+# Configuración sensible (va a un Secret). Sobreescribir en un cluster real.
+secret:
+  SECRET_KEY: "change-me-in-a-real-cluster-0123456789abcdef"
+
+postgres:
+  image: postgres:16
+  storage: 5Gi
+  db: portafolio
+  user: portafolio
+  password: portafolio
+
+ingress:
+  enabled: true
+  className: nginx
+  host: portafolio.local

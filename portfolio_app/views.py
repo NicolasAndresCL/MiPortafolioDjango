@@ -2,6 +2,7 @@ import json
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db import connection
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -13,6 +14,7 @@ from drf_spectacular.utils import (
     extend_schema_view,
 )
 from rest_framework import viewsets
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .models import Project, Skill, Experience, ExperienceHighlight
@@ -256,7 +258,9 @@ _login_response = OpenApiResponse(
     )
 )
 class CustomTokenObtainPairView(TokenObtainPairView):
-    pass
+    # Rate limit específico de login: 10/min (scope 'login' en DEFAULT_THROTTLE_RATES).
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'login'
 
 
 _refresh_example = OpenApiExample(
@@ -284,3 +288,20 @@ _refresh_response = OpenApiResponse(
 )
 class CustomTokenRefreshView(TokenRefreshView):
     pass
+
+
+# ─── Healthcheck (readiness) ───────────────────────────────────────────────────
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def health_check(request):
+    """Readiness probe: verifica la conexión a la base de datos.
+
+    200 {"status": "ok"} si la DB responde; 503 en caso contrario.
+    Sin autenticación — pensado para orquestadores (Docker/K8s) y monitoreo.
+    """
+    try:
+        connection.ensure_connection()
+    except Exception:
+        return JsonResponse({'status': 'error', 'database': 'unavailable'}, status=503)
+    return JsonResponse({'status': 'ok'})

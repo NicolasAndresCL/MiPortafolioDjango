@@ -21,3 +21,7 @@ CONTACT_RECIPIENT_EMAIL = 'test@example.com'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
+
+# Desactivar throttling en tests: el contador por IP se acumularía entre requests
+# de la suite y produciría 429 espurios.
+REST_FRAMEWORK = {**REST_FRAMEWORK, 'DEFAULT_THROTTLE_CLASSES': [], 'DEFAULT_THROTTLE_RATES': {}}

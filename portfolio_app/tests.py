@@ -162,7 +162,7 @@ class ProjectAPITest(APITestCase):
         url = reverse('project-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data), 1)
+        self.assertGreaterEqual(len(response.data['results']), 1)
 
     def test_retrieve_project(self):
         url = reverse('project-detail', args=[self.project.pk])
@@ -186,7 +186,7 @@ class ProjectAPITest(APITestCase):
         Project.objects.create(title='Segundo', description='D', technologies='T')
         url = reverse('project-list')
         response = self.client.get(url)
-        titles = [p['title'] for p in response.data]
+        titles = [p['title'] for p in response.data['results']]
         self.assertEqual(titles[0], 'Segundo')
 
 
@@ -200,7 +200,7 @@ class SkillAPITest(APITestCase):
         url = reverse('skill-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data), 1)
+        self.assertGreaterEqual(len(response.data['results']), 1)
 
     def test_retrieve_skill(self):
         url = reverse('skill-detail', args=[self.skill.pk])
@@ -213,7 +213,7 @@ class SkillAPITest(APITestCase):
         Skill.objects.create(name='Django', level=10)
         url = reverse('skill-list')
         response = self.client.get(url)
-        levels = [s['level'] for s in response.data]
+        levels = [s['level'] for s in response.data['results']]
         self.assertEqual(levels, sorted(levels, reverse=True))
 
     def test_create_skill_unauthenticated_is_forbidden(self):
@@ -240,7 +240,7 @@ class ExperienceAPITest(APITestCase):
         url = reverse('experience-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data), 1)
+        self.assertGreaterEqual(len(response.data['results']), 1)
 
     def test_retrieve_experience_includes_highlights(self):
         url = reverse('experience-detail', args=[self.experience.pk])
@@ -266,7 +266,7 @@ class ExperienceAPITest(APITestCase):
         )
         url = reverse('experience-list')
         response = self.client.get(url)
-        companies = [e['company'] for e in response.data]
+        companies = [e['company'] for e in response.data['results']]
         self.assertEqual(companies[0], 'PedidosYa')
 
 
@@ -288,7 +288,7 @@ class ExperienceHighlightAPITest(APITestCase):
         url = reverse('experiencehighlight-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data), 1)
+        self.assertGreaterEqual(len(response.data['results']), 1)
 
     def test_retrieve_highlight(self):
         url = reverse('experiencehighlight-detail', args=[self.highlight.pk])
@@ -307,8 +307,29 @@ class ExperienceHighlightAPITest(APITestCase):
         ExperienceHighlight.objects.create(experience=self.experience, text='Segundo', order=2)
         url = reverse('experiencehighlight-list')
         response = self.client.get(url)
-        orders = [h['order'] for h in response.data]
+        orders = [h['order'] for h in response.data['results']]
         self.assertEqual(orders, sorted(orders))
+
+
+# ─── Infra: healthcheck y paginación ───────────────────────────────────────────
+
+class HealthCheckTest(TestCase):
+    def test_healthz_ok(self):
+        response = self.client.get(reverse('healthz'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['status'], 'ok')
+
+    def test_healthz_only_get(self):
+        response = self.client.post(reverse('healthz'))
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class PaginationTest(APITestCase):
+    def test_list_response_is_paginated(self):
+        Project.objects.create(title='P', description='D', technologies='T')
+        response = self.client.get(reverse('project-list'))
+        self.assertIn('count', response.data)
+        self.assertIn('results', response.data)
 
 
 # ─── API Tests: Contact ───────────────────────────────────────────────────────

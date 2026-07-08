@@ -1,0 +1,5 @@
+# Scripts que corren en Linux (contenedor): forzar LF siempre, aunque el repo
+# se clone en Windows con autocrlf. Un CRLF en el shebang rompe el ENTRYPOINT.
+*.sh text eol=lf
+entrypoint.sh text eol=lf
+Dockerfile text eol=lf

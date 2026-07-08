@@ -1,0 +1,16 @@
+#cloud-config
+package_update: true
+packages:
+  - docker.io
+
+runcmd:
+  - systemctl enable --now docker
+  - |
+    docker run -d --restart always --name portafolio-api \
+      -p 8000:8000 \
+      -e SECRET_KEY='${secret_key}' \
+      -e DEBUG=False \
+      -e ALLOWED_HOSTS='${allowed_hosts}' \
+      -e DATABASE_URL='${database_url}' \
+      -e DJANGO_SETTINGS_MODULE=portfolio_project.settings.production \
+      ${image}

@@ -10,13 +10,24 @@ Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Do
 
 | Tecnología | Uso |
 |---|---|
-| **Django 5.2** | Framework web y ORM |
-| **Django REST Framework** | ViewSets, serializers, permisos |
+| **Django 5.2 LTS** | Framework web y ORM |
+| **Django REST Framework** | ViewSets, serializers, permisos, throttling, paginación |
 | **drf-spectacular** | OpenAPI 3 + Swagger UI personalizado |
 | **SimpleJWT** | Autenticación JWT (acceso 30 min, refresh 1 día) |
-| **django-environ** | Variables de entorno desde `.env` |
+| **pydantic-settings** | Configuración tipada y validada desde `.env` |
+| **dj-database-url + psycopg 3** | PostgreSQL en producción, con fallback a SQLite |
+| **gunicorn + WhiteNoise** | Servidor WSGI y servido de estáticos en contenedor |
 | **Pillow** | Imágenes de proyectos y logos de habilidades |
-| **SQLite** | Base de datos (local y producción PythonAnywhere) |
+| **pytest + pytest-cov** | Suite de tests (43 tests, ~90% cobertura) |
+| **Docker · Terraform · Helm** | Contenedorización e IaC (demostrativa) |
+
+### Arquitectura de despliegue
+
+- **PythonAnywhere (deploy real):** SQLite + virtualenv + WSGI propio. Sin `DATABASE_URL`,
+  el backend usa SQLite automáticamente; la seguridad HTTPS está *gated* por entorno.
+- **Docker / Kubernetes / AWS (demostrativo):** con `DATABASE_URL` apuntando a PostgreSQL,
+  gunicorn + WhiteNoise sirven la app; Terraform provisiona EC2 + RDS y Helm despliega en K8s.
+  Todo **aditivo y configurable por entorno**, sin afectar el deploy de PythonAnywhere.
 
 ---
 
@@ -24,19 +35,21 @@ Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Do
 
 | Endpoint | Método | Descripción |
 |---|---|---|
-| `/api/projects/` | GET | Lista proyectos (público) |
+| `/healthz/` | GET | Readiness probe (verifica la DB); sin auth |
+| `/api/projects/` | GET | Lista proyectos, paginada (público) |
 | `/api/projects/{id}/` | GET | Detalle de proyecto |
-| `/api/skills/` | GET | Lista habilidades (público) |
+| `/api/skills/` | GET | Lista habilidades, paginada (público) |
 | `/api/experience/` | GET | Lista experiencia laboral con highlights anidados (público) |
 | `/api/experience-highlights/` | GET | Gestión individual de highlights de experiencia |
 | `/api/contacto/` | POST | Recibe mensaje del formulario de contacto |
 | `/api/schema/swagger-ui/` | GET | Documentación interactiva |
 | `/api/schema/redoc/` | GET | Documentación ReDoc |
-| `/api/token/` | POST | Login JWT |
+| `/api/token/` | POST | Login JWT (rate limit 10/min) |
 | `/api/token/refresh/` | POST | Renovar token |
 | `/admin/` | GET | Panel administrativo |
 
-Escritura (POST/PUT/DELETE) requiere autenticación JWT.
+Escritura (POST/PUT/DELETE) requiere autenticación JWT. Respuestas de lista **paginadas**
+(`{count, next, previous, results}`). Rate limiting: anónimo 60/min, autenticado 300/min.
 
 ---
 
@@ -82,8 +95,8 @@ CONTACT_RECIPIENT_EMAIL=tu@gmail.com
 .\env\Scripts\Activate.ps1        # Windows
 source env/bin/activate            # Linux/Mac
 
-# Instalar dependencias
-pip install -r requirements.txt
+# Instalar dependencias (prod + dev)
+pip install -r requirements-dev.txt
 
 # Aplicar migraciones
 python manage.py migrate
@@ -92,7 +105,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Backend disponible en **http://localhost:8000**
+Backend disponible en **http://localhost:8000** (SQLite si no defines `DATABASE_URL`).
 
 Para crear un superusuario y acceder al admin:
 
@@ -100,38 +113,60 @@ Para crear un superusuario y acceder al admin:
 python manage.py createsuperuser
 ```
 
+### Con Docker + PostgreSQL
+
+```bash
+docker compose up --build      # levanta db (Postgres) + api (gunicorn)
+curl http://localhost:8000/healthz/          # {"status": "ok"}
+```
+
 ---
 
 ## Tests
 
 ```bash
-python manage.py test portfolio_app --settings=portfolio_project.settings.testing
+pytest                          # 43 tests + reporte de cobertura (~90%)
 ```
 
-Suite actual: **40 tests**
+Configurado en `pyproject.toml` (`DJANGO_SETTINGS_MODULE=...settings.testing`, `--cov`).
+`conftest.py` fuerza SQLite en tests.
 
 | Clase | Tests |
 |---|---|
-| `ProjectModelTest` | Creación, `__str__`, campos opcionales |
-| `SkillModelTest` | Creación, `__str__`, nivel por defecto, categoría opcional |
-| `ExperienceModelTest` | Creación, `is_current` según `end_date`, `__str__`, ordenamiento |
-| `ExperienceHighlightModelTest` | Creación + relación, ordenamiento, `__str__` |
-| `ProjectAPITest` | List, retrieve, ordenamiento, auth requerida para crear |
-| `SkillAPITest` | List, retrieve, ordenamiento por nivel, auth requerida para crear |
-| `ExperienceAPITest` | List, retrieve con highlights anidados, `is_current`, auth, ordenamiento |
-| `ExperienceHighlightAPITest` | List, retrieve, auth requerida para crear, ordenamiento |
+| `ProjectModelTest` / `SkillModelTest` | Creación, `__str__`, campos por defecto/opcionales |
+| `ExperienceModelTest` / `ExperienceHighlightModelTest` | `is_current`, relación, ordenamiento |
+| `ProjectAPITest` / `SkillAPITest` | List (paginado), retrieve, ordenamiento, auth para crear |
+| `ExperienceAPITest` / `ExperienceHighlightAPITest` | List, retrieve, highlights anidados, auth |
+| `HealthCheckTest` / `PaginationTest` | `/healthz/` 200/405, envoltura de paginación |
 | `ContactAPITest` | Éxito, email enviado, campos faltantes, JSON inválido, solo POST |
+
+---
+
+## Contenedorización e IaC (demostrativo)
+
+Coexiste con el deploy real de PythonAnywhere; no lo reemplaza.
+
+| Recurso | Qué hace |
+|---|---|
+| `Dockerfile` | Imagen multi-stage, usuario no-root, gunicorn + WhiteNoise, `collectstatic` en build |
+| `docker-compose.yml` | Postgres 16 (healthcheck) + API; migraciones vía `entrypoint.sh` |
+| `.github/workflows/build.yml` | Build y push de la imagen a GHCR en tags `v*` |
+| `terraform/` | EC2 + RDS Postgres + security groups + `cloud-init` (validado con `terraform validate`) |
+| `helm/portafolio/` | Deployment (initContainer de migraciones) + StatefulSet Postgres + ConfigMap/Secret/Ingress |
 
 ---
 
 ## CI/CD
 
 **`.github/workflows/ci.yml`** — en cada push/PR:
-- Python 3.12, instala dependencias, corre los 40 tests
+- Python 3.12, instala `requirements-dev.txt`, corre `pytest` con cobertura y sube el `coverage.xml`
+
+**`.github/workflows/build.yml`** — en tags `v*`:
+- Build de la imagen Docker y push a GHCR (`ghcr.io/<owner>/portafolio-backend`)
 
 **`.github/workflows/deploy.yml`** — en push a `main`:
 - SSH a PythonAnywhere: `git pull`, `pip install`, `migrate`, `collectstatic`
-- Recarga la webapp via PythonAnywhere API
+- Recarga la webapp via PythonAnywhere API (sin cambios; sigue en SQLite)
 
 Secrets requeridos en GitHub:
 

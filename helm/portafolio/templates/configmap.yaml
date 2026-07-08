@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    {{- include "portafolio.labels" . | nindent 4 }}
+data:
+  DEBUG: {{ .Values.config.DEBUG | quote }}
+  ALLOWED_HOSTS: {{ .Values.config.ALLOWED_HOSTS | quote }}
+  DJANGO_SETTINGS_MODULE: {{ .Values.config.DJANGO_SETTINGS_MODULE | quote }}
