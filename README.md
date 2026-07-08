@@ -18,16 +18,19 @@ Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Do
 | **dj-database-url + psycopg 3** | PostgreSQL en producción, con fallback a SQLite |
 | **gunicorn + WhiteNoise** | Servidor WSGI y servido de estáticos en contenedor |
 | **Pillow** | Imágenes de proyectos y logos de habilidades |
-| **pytest + pytest-cov** | Suite de tests (43 tests, ~90% cobertura) |
+| **pytest + pytest-cov** | Suite de tests (44 tests, ~91% cobertura) |
 | **Docker · Terraform · Helm** | Contenedorización e IaC (demostrativa) |
 
 ### Arquitectura de despliegue
 
-- **PythonAnywhere (deploy real):** SQLite + virtualenv + WSGI propio. Sin `DATABASE_URL`,
-  el backend usa SQLite automáticamente; la seguridad HTTPS está *gated* por entorno.
-- **Docker / Kubernetes / AWS (demostrativo):** con `DATABASE_URL` apuntando a PostgreSQL,
+- **PythonAnywhere (deploy real):** virtualenv + WSGI propio, sirviendo sobre **PostgreSQL
+  gestionado (Neon PG16)** vía `DATABASE_URL`. El frontend React va embebido (`EMBED_REACT`).
+  Sin `DATABASE_URL` el backend cae a SQLite; la seguridad HTTPS está *gated* por entorno.
+  > Nota: el Postgres propio de PythonAnywhere es la versión 12 y Django 5.2 requiere 14+, por
+  > eso se usa un Postgres externo (Neon). Ver [`docs/migracion_postgres.md`](docs/migracion_postgres.md).
+- **Docker / Kubernetes / AWS (demostrativo):** con `DATABASE_URL` a un Postgres propio,
   gunicorn + WhiteNoise sirven la app; Terraform provisiona EC2 + RDS y Helm despliega en K8s.
-  Todo **aditivo y configurable por entorno**, sin afectar el deploy de PythonAnywhere.
+  Todo **aditivo y configurable por entorno**.
 
 ---
 
@@ -131,7 +134,7 @@ reset_sequences`), sigue el runbook: [`docs/migracion_postgres.md`](docs/migraci
 ## Tests
 
 ```bash
-pytest                          # 43 tests + reporte de cobertura (~90%)
+pytest                          # 44 tests + reporte de cobertura (~91%)
 ```
 
 Configurado en `pyproject.toml` (`DJANGO_SETTINGS_MODULE=...settings.testing`, `--cov`).
