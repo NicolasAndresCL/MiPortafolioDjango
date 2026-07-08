@@ -1,63 +1,48 @@
-# Migración de SQLite → PostgreSQL en PythonAnywhere
+# Migración de SQLite → PostgreSQL (Neon) en PythonAnywhere
 
 Procedimiento **one-time** para pasar el portafolio de SQLite a PostgreSQL sin perder los
-datos existentes (proyectos, skills, experiencia). Requiere **cuenta de pago** de
-PythonAnywhere (necesaria para Postgres y para el acceso SSH/consola).
+datos existentes (proyectos, skills, experiencia).
 
-El código ya soporta ambos motores: si `DATABASE_URL` está definido usa PostgreSQL
+El código soporta ambos motores: si `DATABASE_URL` está definido usa PostgreSQL
 (`dj-database-url` + `psycopg`), y si no, SQLite. Ver `portfolio_project/settings/base.py`.
+
+> **Por qué un Postgres externo y no el de PythonAnywhere:** PA solo ofrece **Postgres 12**,
+> y **Django 5.2 requiere Postgres 14+** (`NotSupportedError: PostgreSQL 14 or later is
+> required`). Por eso se usa un Postgres gestionado externo con versión 14+ — aquí **Neon**
+> (PG16, free tier). Como la cuenta de PA es de pago, puede conectarse a hosts externos.
+
+Rutas reales en el servidor: proyecto en `~/MiPortafolioDjango`, virtualenv
+`MiPortafolioDjango_env`.
 
 ---
 
 ## 0. Antes de empezar
 
-- **Despliega primero el código nuevo** (rama `feat/backend-robusto` mergeada a `main` →
-  deploy). Ese código es el que soporta `DATABASE_URL`.
-- **Verifica que `SECRET_KEY` en el `.env` de producción sea fuerte (≥32 chars** y que no
-  empiece con `django-insecure`), porque `settings/production.py` lo valida al arrancar.
+- **Despliega primero el código nuevo** (rama `feat/backend-robusto`): en la consola,
+  `git fetch origin && git checkout feat/backend-robusto && pip install -r requirements.txt`.
+  Ese código es el que lee `DATABASE_URL`.
+- **`SECRET_KEY` fuerte** en el `.env` (≥32 chars, sin `django-insecure`), o `production.py`
+  aborta el arranque. Genera una: `python -c "from django.core.management.utils import
+  get_random_secret_key; print(get_random_secret_key())"`.
 
-## 1. Iniciar el servidor Postgres y crear la base
+## 1. Crear la base en Neon (PostgreSQL 16)
 
-Panel de PythonAnywhere → pestaña **Databases** → **Postgres**. Datos del servidor de esta
-cuenta (los muestra la propia página) — **Postgres 12**:
+1. [neon.tech](https://neon.tech) → crea cuenta (gratis, GitHub/Google).
+2. **Create project** → Postgres **16**, región **AWS US East** (la más cercana a PA US).
+3. Copia el **connection string** que entrega Neon:
 
-| Dato | Valor |
-|---|---|
-| Address (host) | `nicolasandrescl-5347.postgres.pythonanywhere-services.com` |
-| Port | `15347` |
-| Superuser role | `super` |
-
-1. En **"Postgres Superuser Password"**, define y guarda una contraseña para el rol `super`
-   (distinta de tu password de la cuenta). PA la escribe en `~/.pgpass`, por lo que los
-   comandos `psql` desde la consola de PA no volverán a pedírtela.
-2. Crea la base de la app. La vía más simple es el botón **"Start a Postgres console"** (abre
-   `psql` ya conectado como `super`); o desde una **consola Bash**:
-
-   ```bash
-   # Usa la contraseña guardada en ~/.pgpass automáticamente
-   psql -h nicolasandrescl-5347.postgres.pythonanywhere-services.com -p 15347 -U super postgres
+   ```
+   postgresql://usuario:password@ep-xxxx-yyyy.us-east-2.aws.neon.tech/neondb?sslmode=require
    ```
 
-   Dentro de `psql`:
-
-   ```sql
-   CREATE DATABASE portafolio;
-   \q
-   ```
-
-> Nota de versión: PA usa **Postgres 12**. El código es compatible sin cambios (Django 5.2 +
-> psycopg 3). El `docker-compose.yml` / Helm / Terraform de este repo usan Postgres 16 por ser
-> entornos de demostración; no afecta la migración a PA. Para el portafolio basta con el rol
-> `super`; en un entorno más estricto crearías un rol de app con permisos acotados.
+   Neon crea la base (`neondb`) y el usuario automáticamente; no hace falta `CREATE DATABASE`.
 
 ## 2. Volcar los datos actuales (¡todavía en SQLite!)
 
-En una **consola Bash** de PythonAnywhere, con `DATABASE_URL` **aún ausente** del `.env`
-(para que lea la SQLite actual):
+Con `DATABASE_URL` **aún ausente/comentado** del `.env` (para que lea la SQLite actual):
 
 ```bash
-workon <tu-virtualenv>
-cd ~/Portafolio/backend/MiPortafolioDjango
+cd ~/MiPortafolioDjango
 
 python manage.py dumpdata --natural-foreign --natural-primary \
   --exclude contenttypes --exclude auth.permission \
@@ -66,34 +51,34 @@ python manage.py dumpdata --natural-foreign --natural-primary \
 ```
 
 > Se excluyen `contenttypes`/`permissions`/`logentry`/`sessions` para evitar conflictos al
-> cargar. Los datos de contenido (`portfolio_app.*`) y los usuarios (`auth.user`) sí se vuelcan.
-> Las imágenes viven en `media/` (no en la DB), así que no se tocan.
+> cargar. El contenido (`portfolio_app.*`) y los usuarios (`auth.user`) sí se vuelcan. Las
+> imágenes viven en `media/` (no en la DB), así que no se tocan.
 
-## 3. Apuntar a PostgreSQL
+## 3. Apuntar a Neon
 
-Añade al `.env` de producción la URL de conexión (usuario `super`, la contraseña que
-definiste, host y puerto del paso 1, base `portafolio`):
+Pon en el `.env` de producción el connection string de Neon (paso 1):
 
 ```
-DATABASE_URL=postgres://super:TU_PASSWORD@nicolasandrescl-5347.postgres.pythonanywhere-services.com:15347/portafolio
+DATABASE_URL=postgresql://usuario:password@ep-xxxx.us-east-2.aws.neon.tech/neondb?sslmode=require
 ```
 
-> Si la conexión exige TLS, añade `?sslmode=require` al final de la URL.
+> El `?sslmode=require` es obligatorio en Neon. Si la password tuviera caracteres especiales
+> (`@ : / #`), URL-encodéalos:
+> `python -c "from urllib.parse import quote; print(quote(input(), safe=''))"`.
 
 ## 4. Crear el esquema y cargar los datos
 
 ```bash
-python manage.py migrate          # crea las tablas vacías en Postgres
+python manage.py migrate            # "Applying ... OK" contra Neon (base vacía)
 python manage.py loaddata datadump.json
 ```
 
 ## 5. Resetear las secuencias (crítico en Postgres)
 
-Tras un `loaddata` con PKs explícitas, los contadores de autoincremento de Postgres quedan
-desactualizados y el próximo alta daría `duplicate key`. Se corrigen con el comando incluido:
+Tras un `loaddata` con PKs explícitas, los autoincrementos de Postgres quedan desactualizados
+y el próximo alta daría `duplicate key`. Se corrigen con el comando incluido:
 
 ```bash
-python manage.py reset_sequences            # portfolio_app por defecto
 python manage.py reset_sequences portfolio_app auth
 ```
 
@@ -102,11 +87,14 @@ python manage.py reset_sequences portfolio_app auth
 ## 6. Verificar y recargar
 
 ```bash
-python manage.py showmigrations | tail       # migraciones aplicadas
+python manage.py showmigrations | tail
 python manage.py shell -c "from portfolio_app.models import Project, Skill; print(Project.objects.count(), Skill.objects.count())"
 ```
 
-Recarga la webapp desde el panel (o vía el reload del `deploy.yml`). Comprueba:
+Si el login de admin no funciona (el volcado puede tener una contraseña anterior):
+`python manage.py changepassword <usuario>`.
+
+Recarga la webapp desde el panel Web. Comprueba:
 
 - `https://nicolasandrescl.pythonanywhere.com/healthz/` → `{"status": "ok"}`
 - `https://nicolasandrescl.pythonanywhere.com/api/projects/` → tus proyectos, paginados.
@@ -117,5 +105,8 @@ Recarga la webapp desde el panel (o vía el reload del `deploy.yml`). Comprueba:
 rm datadump.json     # no dejar el volcado con datos en el servidor
 ```
 
-A partir de aquí sigues gestionando el contenido por Swagger como siempre, pero ahora contra
-PostgreSQL. Para volver a SQLite bastaría con quitar `DATABASE_URL` del `.env`.
+A partir de aquí sigues gestionando el contenido por Swagger, pero ahora contra Neon. Para
+volver a SQLite bastaría con comentar `DATABASE_URL`.
+
+> Nota Neon free tier: la base **se suspende tras inactividad** y despierta en ~1s en la
+> primera consulta. Sin impacto real para un portafolio.
