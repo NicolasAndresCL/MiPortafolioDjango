@@ -16,15 +16,39 @@ El código ya soporta ambos motores: si `DATABASE_URL` está definido usa Postgr
 - **Verifica que `SECRET_KEY` en el `.env` de producción sea fuerte (≥32 chars** y que no
   empiece con `django-insecure`), porque `settings/production.py` lo valida al arrancar.
 
-## 1. Crear la base PostgreSQL en PythonAnywhere
+## 1. Iniciar el servidor Postgres y crear la base
 
-Panel de PythonAnywhere → pestaña **Databases** → sección **Postgres** →
-*Start a Postgres server*. Anota: host, puerto, usuario y contraseña. Crea una base
-(p. ej. `portafolio`). El host tendrá la forma:
+Panel de PythonAnywhere → pestaña **Databases** → **Postgres**. Datos del servidor de esta
+cuenta (los muestra la propia página) — **Postgres 12**:
 
-```
-<usuario>-<id>.postgres.pythonanywhere-services.com
-```
+| Dato | Valor |
+|---|---|
+| Address (host) | `nicolasandrescl-5347.postgres.pythonanywhere-services.com` |
+| Port | `15347` |
+| Superuser role | `super` |
+
+1. En **"Postgres Superuser Password"**, define y guarda una contraseña para el rol `super`
+   (distinta de tu password de la cuenta). PA la escribe en `~/.pgpass`, por lo que los
+   comandos `psql` desde la consola de PA no volverán a pedírtela.
+2. Crea la base de la app. La vía más simple es el botón **"Start a Postgres console"** (abre
+   `psql` ya conectado como `super`); o desde una **consola Bash**:
+
+   ```bash
+   # Usa la contraseña guardada en ~/.pgpass automáticamente
+   psql -h nicolasandrescl-5347.postgres.pythonanywhere-services.com -p 15347 -U super postgres
+   ```
+
+   Dentro de `psql`:
+
+   ```sql
+   CREATE DATABASE portafolio;
+   \q
+   ```
+
+> Nota de versión: PA usa **Postgres 12**. El código es compatible sin cambios (Django 5.2 +
+> psycopg 3). El `docker-compose.yml` / Helm / Terraform de este repo usan Postgres 16 por ser
+> entornos de demostración; no afecta la migración a PA. Para el portafolio basta con el rol
+> `super`; en un entorno más estricto crearías un rol de app con permisos acotados.
 
 ## 2. Volcar los datos actuales (¡todavía en SQLite!)
 
@@ -47,11 +71,14 @@ python manage.py dumpdata --natural-foreign --natural-primary \
 
 ## 3. Apuntar a PostgreSQL
 
-Añade al `.env` de producción la URL de conexión (con los datos del paso 1):
+Añade al `.env` de producción la URL de conexión (usuario `super`, la contraseña que
+definiste, host y puerto del paso 1, base `portafolio`):
 
 ```
-DATABASE_URL=postgres://usuario:password@usuario-XXXX.postgres.pythonanywhere-services.com:PUERTO/portafolio
+DATABASE_URL=postgres://super:TU_PASSWORD@nicolasandrescl-5347.postgres.pythonanywhere-services.com:15347/portafolio
 ```
+
+> Si la conexión exige TLS, añade `?sslmode=require` al final de la URL.
 
 ## 4. Crear el esquema y cargar los datos
 
