@@ -332,6 +332,16 @@ class PaginationTest(APITestCase):
         self.assertIn('results', response.data)
 
 
+class ResetSequencesCommandTest(TestCase):
+    def test_reset_sequences_runs(self):
+        from io import StringIO
+        from django.core.management import call_command
+
+        out = StringIO()
+        call_command('reset_sequences', stdout=out)
+        self.assertIn('Secuencias reseteadas', out.getvalue())
+
+
 # ─── API Tests: Contact ───────────────────────────────────────────────────────
 
 @override_settings(

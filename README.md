@@ -120,6 +120,12 @@ docker compose up --build      # levanta db (Postgres) + api (gunicorn)
 curl http://localhost:8000/healthz/          # {"status": "ok"}
 ```
 
+### Migrar de SQLite a PostgreSQL
+
+Si defines `DATABASE_URL` el backend usa Postgres; si no, SQLite. Para migrar los datos
+existentes sin perderlos (dump → loaddata → reset de secuencias con `manage.py
+reset_sequences`), sigue el runbook: [`docs/migracion_postgres.md`](docs/migracion_postgres.md).
+
 ---
 
 ## Tests
