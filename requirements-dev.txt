@@ -1,7 +1,8 @@
-# Dependencias de desarrollo/testing. Instala también las de producción.
+# Dependencias de desarrollo/testing/typing. Instala también las de producción.
 # Uso: pip install -r requirements-dev.txt
 -r requirements.txt
 
+# Testing
 coverage==7.15.0
 iniconfig==2.3.0
 pluggy==1.6.0
@@ -9,3 +10,14 @@ Pygments==2.20.0
 pytest==9.1.1
 pytest-cov==7.1.0
 pytest-django==4.12.0
+
+# Type checking
+ast_serialize==0.6.0
+django-stubs==6.0.6
+django-stubs-ext==6.0.6
+djangorestframework-stubs==3.17.0
+librt==0.13.0
+mypy==2.2.0
+mypy_extensions==1.1.0
+pathspec==1.1.1
+types-PyYAML==6.0.12.20260518
