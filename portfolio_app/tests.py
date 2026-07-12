@@ -36,7 +36,7 @@ class ProjectModelTest(TestCase):
         self.assertEqual(project.github_link, 'https://github.com/test/project')
         self.assertTrue(project.is_featured)
         self.assertIsNotNone(project.created_at)
-        self.assertIn('projects/test_image', project.image.name)
+        self.assertIn('projects/test_image', project.image.name or '')
 
     def test_project_str_representation(self):
         project = Project.objects.create(title='Otro Proyecto', description='Desc', technologies='Tech')
