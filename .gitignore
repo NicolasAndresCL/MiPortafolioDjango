@@ -3,6 +3,9 @@ env/
 # Guía interna para desarrollo asistido por IA (no versionar)
 CLAUDE.md
 
+# Bitácora personal de hitos para el portafolio (no versionar)
+memory.md
+
 # Archivos de Python
 *.pyc
 __pycache__/

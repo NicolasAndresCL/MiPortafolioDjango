@@ -19,6 +19,7 @@ Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Do
 | **gunicorn + WhiteNoise** | Servidor WSGI y servido de estáticos en contenedor |
 | **Pillow** | Imágenes de proyectos y logos de habilidades |
 | **pytest + pytest-cov** | Suite de tests (44 tests, ~91% cobertura) |
+| **mypy + django-stubs** | Type checking (en el CI) |
 | **Docker · Terraform · Helm** | Contenedorización e IaC (demostrativa) |
 
 ### Arquitectura de despliegue
@@ -131,14 +132,16 @@ reset_sequences`), sigue el runbook: [`docs/migracion_postgres.md`](docs/migraci
 
 ---
 
-## Tests
+## Tests y type checking
 
 ```bash
 pytest                          # 44 tests + reporte de cobertura (~91%)
+mypy portfolio_app portfolio_project   # type checking (django-stubs)
 ```
 
-Configurado en `pyproject.toml` (`DJANGO_SETTINGS_MODULE=...settings.testing`, `--cov`).
-`conftest.py` fuerza SQLite en tests.
+Tests configurados en `pyproject.toml` (`DJANGO_SETTINGS_MODULE=...settings.testing`, `--cov`);
+`conftest.py` fuerza SQLite. Type checking en `mypy.ini` (django-stubs + drf-stubs, modo laxo);
+ambos corren en el CI. Dependencias de dev/typing en `requirements-dev.txt`.
 
 | Clase | Tests |
 |---|---|
@@ -168,7 +171,7 @@ Coexiste con el deploy real de PythonAnywhere; no lo reemplaza.
 ## CI/CD
 
 **`.github/workflows/ci.yml`** — en cada push/PR:
-- Python 3.12, instala `requirements-dev.txt`, corre `pytest` con cobertura y sube el `coverage.xml`
+- Python 3.12, instala `requirements-dev.txt`, corre `mypy` (type check) y `pytest` con cobertura, y sube el `coverage.xml`
 
 **`.github/workflows/build.yml`** — en tags `v*`:
 - Build de la imagen Docker y push a GHCR (`ghcr.io/<owner>/portafolio-backend`)
