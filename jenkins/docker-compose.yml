@@ -1,0 +1,20 @@
+# Levanta el servidor Jenkins (CD) en Docker.
+# Uso: docker compose -f jenkins/docker-compose.yml up -d --build
+services:
+  jenkins:
+    build: .
+    image: portafolio-jenkins:lts
+    container_name: portafolio-jenkins
+    # root para poder usar el socket de Docker del host (aceptable en local).
+    user: root
+    ports:
+      - "8080:8080"     # UI
+      - "50000:50000"   # agentes
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      # Socket del host (Docker Desktop) para docker build / docker compose desde el pipeline.
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:

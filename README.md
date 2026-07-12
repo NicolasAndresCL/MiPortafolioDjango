@@ -162,7 +162,8 @@ Coexiste con el deploy real de PythonAnywhere; no lo reemplaza.
 |---|---|
 | `Dockerfile` | Imagen multi-stage, usuario no-root, gunicorn + WhiteNoise, `collectstatic` en build |
 | `docker-compose.yml` | Postgres 16 (healthcheck) + API; migraciones vía `entrypoint.sh` |
-| `.github/workflows/build.yml` | Build y push de la imagen a GHCR en tags `v*` |
+| `docker-compose.deploy.yml` | Corre la imagen publicada en GHCR (lo usa el CD de Jenkins) |
+| `jenkins/` + `Jenkinsfile` | Servidor Jenkins en Docker + pipeline de CD (build → GHCR → deploy) |
 | `terraform/` | EC2 + RDS Postgres + security groups + `cloud-init` (validado con `terraform validate`) |
 | `helm/portafolio/` | Deployment (initContainer de migraciones) + StatefulSet Postgres + ConfigMap/Secret/Ingress |
 
@@ -170,23 +171,27 @@ Coexiste con el deploy real de PythonAnywhere; no lo reemplaza.
 
 ## CI/CD
 
+Reparto: **GitHub Actions = CI** (tests) · **Jenkins = CD** (build + deploy).
+
+### CI — GitHub Actions
 **`.github/workflows/ci.yml`** — en cada push/PR:
 - Python 3.12, instala `requirements-dev.txt`, corre `mypy` (type check) y `pytest` con cobertura, y sube el `coverage.xml`
 
-**`.github/workflows/build.yml`** — en tags `v*`:
-- Build de la imagen Docker y push a GHCR (`ghcr.io/<owner>/portafolio-backend`)
+### CD — Jenkins en Docker
+Servidor Jenkins containerizado (`jenkins/`) que ejecuta el `Jenkinsfile` (pipeline declarativo):
+1. **Test (gate)** — mypy + pytest en un contenedor `python:3.12`
+2. **Build** — imagen Docker (`ghcr.io/<owner>/portafolio-backend`)
+3. **Push** — a GHCR
+4. **Deploy** — `docker compose -f docker-compose.deploy.yml up -d` (api + Postgres) + healthcheck
 
-**`.github/workflows/deploy.yml`** — en push a `main`:
-- SSH a PythonAnywhere: `git pull`, `pip install`, `migrate`, `collectstatic`
-- Recarga la webapp via PythonAnywhere API (sin cambios; sigue en SQLite)
+```bash
+docker compose -f jenkins/docker-compose.yml up -d --build   # levantar Jenkins → localhost:8080
+```
+Setup completo (credenciales, pipeline, triggers) en [`jenkins/README.md`](jenkins/README.md).
+Trigger por `pollSCM` (Jenkins local no recibe webhooks); portable a servidor (EC2 de `terraform/`).
 
-Secrets requeridos en GitHub:
-
-| Secret | Descripción |
-|---|---|
-| `PA_USERNAME` | Usuario de PythonAnywhere |
-| `PA_PASSWORD` | Contraseña de PythonAnywhere |
-| `PA_API_TOKEN` | API Token (Account → API Token en PA) |
+Los antiguos `build.yml`/`deploy.yml` (CD en GitHub Actions) quedaron en
+`.github/workflows-disabled/` como referencia.
 
 ---
 
