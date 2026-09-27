@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Nicolás Andrés Cano Leal — CV</title>
+<link rel="stylesheet" href="cv.css">
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Nicolás Andrés Cano Leal</h1>
+  <p class="headline">Backend Python Developer · DevOps &amp; Reliability</p>
+  <p class="contact">
+    <span>Rancagua, Chile (remoto)</span>
+    <span><a href="mailto:nicolas.cano.leal@gmail.com">nicolas.cano.leal@gmail.com</a></span>
+    <span>+56 9 9411 3328</span>
+    <span><a href="https://github.com/NicolasAndresCL">github.com/NicolasAndresCL</a></span>
+    <span><a href="https://www.linkedin.com/in/nicolas-andres-cano-leal">linkedin.com/in/nicolas-andres-cano-leal</a></span>
+    <span><a href="https://nicolasandrescl.pythonanywhere.com">nicolasandrescl.pythonanywhere.com</a></span>
+  </p>
+</header>
+
+<h2>Perfil</h2>
+<p>
+  Desarrollador backend Python que construye servicios pensando en cómo se operan, no solo en
+  cómo se escriben. Soy el único desarrollador de un equipo de operaciones en PedidosYa, donde
+  reemplazo procesos manuales por servicios Python testeados que corren desatendidos contra
+  BigQuery, Google Sheets y sistemas internos. Trabajo con Django y DRF, y llevo cada proyecto
+  hasta producción con CI/CD, contenedores e infraestructura como código. Mi objetivo es
+  Site Reliability Engineering: sistemas que escalan, se observan y se recuperan solos.
+</p>
+
+<h2>Experiencia</h2>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>PedidosYa — Live Performance Agent (LiveOps / BizOps)</h3>
+    <span class="when">mar. 2026 – presente</span>
+  </div>
+  <p class="sub">Rancagua, Chile (remoto) · Único desarrollador del equipo de operaciones</p>
+
+  <p class="sub-block">Bot de automatización de operaciones en tiempo real</p>
+  <ul>
+    <li>Evolucioné el bot interno a través de 10 versiones (v4.0 → v5.0), con 481 tests
+        automatizados y 144 commits bajo convenciones profesionales.</li>
+    <li>Orquesté ~10 motores concurrentes en hilos (alertas, reporting, watchdogs) y cerré una
+        condición de carrera <em>check-then-act</em> entre ellos con un cooldown de reserva atómica.</li>
+    <li>Reduje las llamadas a Google Sheets de 21 round-trips a 1 con un singleton con caché TTL
+        (~16 min → &lt;1 min) y bajé el cuello de botella global de ~37 min a ~10 min.</li>
+    <li>Diseñé en capas: lógica pura separada de Selenium, red y BigQuery, testeable sin abrir un navegador.</li>
+  </ul>
+
+  <p class="sub-block">Recolector de dossiers de incidencias</p>
+  <ul>
+    <li>Construí un backend Django/DRF con UI en NiceGUI que reúne la evidencia de cada
+        incidencia desde BigQuery y reemplaza el llenado manual de planillas y correos.</li>
+    <li>Una auditoría medida detectó que la fuente principal había caído al 0,11 % de cobertura;
+        migré el timeline a una tabla con 100 % de cobertura y 13 meses de retención. 600+ tests.</li>
+  </ul>
+
+  <p class="sub-block">Sincronización de participantes de órdenes canceladas</p>
+  <ul>
+    <li>Servicio que lee un stream de eventos en BigQuery (solo lectura) y publica de forma
+        idempotente en Google Sheets, sin pisar lo que anotan los analistas.</li>
+    <li>Arquitectura de puertos y adaptadores: cambiar el destino de BigQuery a Sheets costó
+        configuración, no código de dominio. Decisiones registradas en ADRs con diagramas UML.</li>
+    <li>Operando sobre 60.000+ filas: diagnostiqué 923 celdas corruptas por proporción estadística
+        y migré el esquema de la hoja en vivo sin perder datos. 312 tests, 80 % de cobertura.</li>
+  </ul>
+  <p class="stack">Python · Django/DRF · NiceGUI · BigQuery · Google Sheets API · Selenium · Pandas · pytest · GitHub Actions</p>
+</div>
+
+<h2>Proyectos</h2>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>All in Django — backend con infraestructura completa como código</h3>
+    <span class="when"><a href="https://github.com/NicolasAndresCL/All_in_Django">repo</a></span>
+  </div>
+  <ul>
+    <li>API Django + DRF para cinco dominios operativos, con UI cliente en NiceGUI que solo habla HTTP.
+        229 tests, ~83 % de cobertura exigida en CI.</li>
+    <li>Contrato OpenAPI (drf-spectacular) verificado con una colección Postman de 79 peticiones y
+        183 aserciones que Newman corre en CI contra un stack efímero; un test falla si un endpoint queda sin probar.</li>
+    <li>CI de 6 jobs (GitHub Actions) y CD con Jenkins: release v1.0.0 publicada a GHCR y desplegada con
+        respaldo previo y rollback automático.</li>
+    <li>Terraform (EC2 + RDS PostgreSQL) probado sin cuenta de AWS con <code>terraform test</code> y proveedores
+        simulados; la prueba destapó tres fallos latentes antes del primer despliegue. Helm para Kubernetes.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>Portafolio personal — Django 5.2 LTS + React (en producción)</h3>
+    <span class="when"><a href="https://github.com/NicolasAndresCL/MiPortafolioDjango">repo</a></span>
+  </div>
+  <ul>
+    <li>Migré producción de SQLite a PostgreSQL 16 gestionado (Neon) sin pérdida de datos, tras
+        diagnosticar que el Postgres del hosting (v12) era incompatible con Django 5.2.</li>
+    <li>Configuración tipada con pydantic-settings, throttling, paginación, <code>/healthz/</code>, HTTPS
+        endurecido por entorno. Type checking con mypy + django-stubs, 44 tests, ~91 % de cobertura.</li>
+    <li>CI en GitHub Actions y CD con Jenkins en Docker (test gate → imagen → GHCR → deploy).</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>Infraestructura reproducible con Docker</h3>
+  </div>
+  <ul>
+    <li><a href="https://github.com/NicolasAndresCL/n8n-docker-local">n8n-docker-local</a>: n8n con versión
+        fijada, volumen externo protegido, healthcheck real y CI que verifica que el servicio arranca.</li>
+    <li><a href="https://github.com/NicolasAndresCL/ultimate-linux-lab">ultimate-linux-lab</a>: Ubuntu 24.04 LTS
+        con systemd real en un contenedor desechable, en reemplazo de una máquina virtual.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <p class="sub-block">Otros proyectos</p>
+  <p>
+    APIs con DRF y GraphQL (JWT, OpenAPI), e-commerce Django + React, CRUD con FastAPI + SQLAlchemy,
+    refactor de Flask monolítico a API REST, dashboards en Streamlit y un modelo de regresión con
+    scikit-learn. Catálogo completo en el portafolio.
+  </p>
+</div>
+
+<h2>Habilidades técnicas</h2>
+<dl class="skills">
+  <dt>Lenguajes</dt><dd>Python (avanzado), SQL, JavaScript, Java (en formación), Bash</dd>
+  <dt>Backend</dt><dd>Django, Django REST Framework, FastAPI, Flask, SQLAlchemy, pydantic, drf-spectacular (OpenAPI), GraphQL, JWT</dd>
+  <dt>Bases de datos</dt><dd>PostgreSQL (Neon, RDS), MySQL, SQLite, BigQuery</dd>
+  <dt>DevOps / IaC</dt><dd>Docker (multi-stage, no-root), Docker Compose, GitHub Actions, Jenkins, GHCR, Terraform, Helm, Kubernetes, Linux, AWS (EC2, RDS)</dd>
+  <dt>Calidad</dt><dd>pytest, coverage, mypy, Postman + Newman, pruebas de contrato, ADRs, UML</dd>
+  <dt>Automatización</dt><dd>Selenium, n8n, Google Sheets API, BeautifulSoup, Pandas, ETL idempotente</dd>
+  <dt>Interfaces</dt><dd>React, Vite, NiceGUI, Streamlit, Plotly</dd>
+  <dt>Herramientas</dt><dd>Git (conventional commits), desarrollo asistido por IA (Claude Code + MCP), VS Code</dd>
+</dl>
+
+<div class="two-col">
+  <div>
+    <h2>Formación</h2>
+    <ul class="compact">
+      <li><strong>Ingeniería en Informática</strong> — IP Santo Tomás (en curso)</li>
+      <li><strong>Técnico en Enfermería</strong>, mención Instrumentista Quirúrgico — INACAP, 2014</li>
+      <li>2.500+ horas de estudio autodidacta en backend Python, arquitectura y DevOps</li>
+    </ul>
+    <h2>Idiomas</h2>
+    <p>Español nativo · Inglés B1+ (lectura técnica fluida)</p>
+  </div>
+  <div>
+    <h2>Certificaciones</h2>
+    <ul class="compact">
+      <li>Análisis de Datos con Python — Desafío Latam (2025)</li>
+      <li>Domina Python: Django REST · FastAPI — LinkedIn Learning (2025)</li>
+      <li>Python Avanzado — LinkedIn Learning (2025)</li>
+      <li>AWS para Profesionales IT y ruta Introducción a AWS — LinkedIn Learning (2025)</li>
+      <li>Seguridad Web Esencial · Ciberseguridad: Redes y Web — LinkedIn Learning (2025)</li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</body>
+</html>

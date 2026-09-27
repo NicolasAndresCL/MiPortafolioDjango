@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nicolás Andrés Cano Leal — Resume</title>
+<link rel="stylesheet" href="cv.css">
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Nicolás Andrés Cano Leal</h1>
+  <p class="headline">Backend Python Developer · DevOps &amp; Reliability</p>
+  <p class="contact">
+    <span>Rancagua, Chile (remote)</span>
+    <span><a href="mailto:nicolas.cano.leal@gmail.com">nicolas.cano.leal@gmail.com</a></span>
+    <span>+56 9 9411 3328</span>
+    <span><a href="https://github.com/NicolasAndresCL">github.com/NicolasAndresCL</a></span>
+    <span><a href="https://www.linkedin.com/in/nicolas-andres-cano-leal">linkedin.com/in/nicolas-andres-cano-leal</a></span>
+    <span><a href="https://nicolasandrescl.pythonanywhere.com">nicolasandrescl.pythonanywhere.com</a></span>
+  </p>
+</header>
+
+<h2>Summary</h2>
+<p>
+  Backend Python developer who builds services with operations in mind, not just code. I am the
+  only developer on an operations team at PedidosYa, where I replace manual processes with tested
+  Python services that run unattended against BigQuery, Google Sheets and internal systems. I work
+  with Django and DRF and take every project to production with CI/CD, containers and
+  infrastructure as code. My goal is Site Reliability Engineering: systems that scale, are
+  observable and recover on their own.
+</p>
+
+<h2>Experience</h2>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>PedidosYa — Live Performance Agent (LiveOps / BizOps)</h3>
+    <span class="when">Mar 2026 – present</span>
+  </div>
+  <p class="sub">Rancagua, Chile (remote) · Sole developer on the operations team</p>
+
+  <p class="sub-block">Real-time operations automation bot</p>
+  <ul>
+    <li>Evolved the internal bot across 10 releases (v4.0 → v5.0), backed by 481 automated tests
+        and 144 commits following professional conventions.</li>
+    <li>Orchestrated ~10 concurrent threaded engines (alerts, reporting, watchdogs) and closed a
+        check-then-act race condition between them with an atomic-reservation cooldown.</li>
+    <li>Cut Google Sheets calls from 21 round-trips to 1 with a TTL-cached singleton
+        (~16 min → &lt;1 min) and reduced the global bottleneck from ~37 min to ~10 min.</li>
+    <li>Layered design: pure logic isolated from Selenium, network and BigQuery, testable without a browser.</li>
+  </ul>
+
+  <p class="sub-block">Incident dossier collector</p>
+  <ul>
+    <li>Built a Django/DRF backend with a NiceGUI UI that gathers each incident's evidence from
+        BigQuery, replacing manual spreadsheet and email work.</li>
+    <li>A measured audit found the main data source had dropped to 0.11% coverage; I moved the
+        timeline to a table with 100% coverage and 13 months of retention. 600+ tests.</li>
+  </ul>
+
+  <p class="sub-block">Cancelled-order participant sync</p>
+  <ul>
+    <li>Service that reads an event stream in BigQuery (read-only) and publishes idempotently to
+        Google Sheets without overwriting analysts' annotations.</li>
+    <li>Ports-and-adapters architecture: switching the sink from BigQuery to Sheets was a config
+        change, not a domain change. Decisions recorded as ADRs with UML diagrams.</li>
+    <li>Running on 60,000+ rows: diagnosed 923 corrupted cells through statistical proportion and
+        migrated the live sheet's schema with no data loss. 312 tests, 80% coverage.</li>
+  </ul>
+  <p class="stack">Python · Django/DRF · NiceGUI · BigQuery · Google Sheets API · Selenium · Pandas · pytest · GitHub Actions</p>
+</div>
+
+<h2>Projects</h2>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>All in Django — backend with full infrastructure as code</h3>
+    <span class="when"><a href="https://github.com/NicolasAndresCL/All_in_Django">repo</a></span>
+  </div>
+  <ul>
+    <li>Django + DRF API for five operational domains, with a NiceGUI client UI that talks HTTP only.
+        229 tests, ~83% coverage enforced in CI.</li>
+    <li>OpenAPI contract (drf-spectacular) verified by a 79-request, 183-assertion Postman collection
+        that Newman runs in CI against an ephemeral stack; a test fails if any endpoint goes untested.</li>
+    <li>6-job CI (GitHub Actions) and Jenkins CD: v1.0.0 released to GHCR and deployed with a
+        pre-deploy backup and automatic rollback.</li>
+    <li>Terraform (EC2 + RDS PostgreSQL) tested without an AWS account using <code>terraform test</code>
+        and mock providers; the tests surfaced three latent bugs before the first deploy. Helm for Kubernetes.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>Personal portfolio — Django 5.2 LTS + React (in production)</h3>
+    <span class="when"><a href="https://github.com/NicolasAndresCL/MiPortafolioDjango">repo</a></span>
+  </div>
+  <ul>
+    <li>Migrated production from SQLite to managed PostgreSQL 16 (Neon) with no data loss, after
+        finding that the host's Postgres (v12) was incompatible with Django 5.2.</li>
+    <li>Typed config with pydantic-settings, throttling, pagination, <code>/healthz/</code>, per-environment
+        HTTPS hardening. Type checking with mypy + django-stubs, 44 tests, ~91% coverage.</li>
+    <li>GitHub Actions CI and Jenkins-in-Docker CD (test gate → image → GHCR → deploy).</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="entry-head">
+    <h3>Reproducible infrastructure with Docker</h3>
+  </div>
+  <ul>
+    <li><a href="https://github.com/NicolasAndresCL/n8n-docker-local">n8n-docker-local</a>: n8n with a pinned
+        version, protected external volume, real healthcheck and CI that verifies the service starts.</li>
+    <li><a href="https://github.com/NicolasAndresCL/ultimate-linux-lab">ultimate-linux-lab</a>: Ubuntu 24.04 LTS
+        with real systemd in a disposable container, replacing a virtual machine.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <p class="sub-block">Other projects</p>
+  <p>
+    DRF and GraphQL APIs (JWT, OpenAPI), a Django + React e-commerce, a FastAPI + SQLAlchemy CRUD,
+    a Flask monolith refactored into a REST API, Streamlit dashboards and a scikit-learn regression
+    model. Full catalog on the portfolio site.
+  </p>
+</div>
+
+<h2>Technical skills</h2>
+<dl class="skills">
+  <dt>Languages</dt><dd>Python (advanced), SQL, JavaScript, Java (learning), Bash</dd>
+  <dt>Backend</dt><dd>Django, Django REST Framework, FastAPI, Flask, SQLAlchemy, pydantic, drf-spectacular (OpenAPI), GraphQL, JWT</dd>
+  <dt>Databases</dt><dd>PostgreSQL (Neon, RDS), MySQL, SQLite, BigQuery</dd>
+  <dt>DevOps / IaC</dt><dd>Docker (multi-stage, non-root), Docker Compose, GitHub Actions, Jenkins, GHCR, Terraform, Helm, Kubernetes, Linux, AWS (EC2, RDS)</dd>
+  <dt>Quality</dt><dd>pytest, coverage, mypy, Postman + Newman, contract testing, ADRs, UML</dd>
+  <dt>Automation</dt><dd>Selenium, n8n, Google Sheets API, BeautifulSoup, Pandas, idempotent ETL</dd>
+  <dt>Interfaces</dt><dd>React, Vite, NiceGUI, Streamlit, Plotly</dd>
+  <dt>Tooling</dt><dd>Git (conventional commits), AI-assisted development (Claude Code + MCP), VS Code</dd>
+</dl>
+
+<div class="two-col">
+  <div>
+    <h2>Education</h2>
+    <ul class="compact">
+      <li><strong>Computer Engineering</strong> — IP Santo Tomás (in progress)</li>
+      <li><strong>Nursing Technician</strong>, Surgical Instrumentation — INACAP, 2014</li>
+      <li>2,500+ hours of self-directed study in Python backend, architecture and DevOps</li>
+    </ul>
+    <h2>Languages</h2>
+    <p>Spanish (native) · English B1+ (fluent technical reading)</p>
+  </div>
+  <div>
+    <h2>Certifications</h2>
+    <ul class="compact">
+      <li>Data Analysis with Python — Desafío Latam (2025)</li>
+      <li>Master Python: Django REST · FastAPI — LinkedIn Learning (2025)</li>
+      <li>Advanced Python — LinkedIn Learning (2025)</li>
+      <li>AWS for IT Professionals and Intro to AWS path — LinkedIn Learning (2025)</li>
+      <li>Essential Web Security · Practical Cybersecurity — LinkedIn Learning (2025)</li>
+    </ul>
+  </div>
+</div>
+
+</main>
+</body>
+</html>
