@@ -18,7 +18,7 @@ Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Do
 | **dj-database-url + psycopg 3** | PostgreSQL en producción, con fallback a SQLite |
 | **gunicorn + WhiteNoise** | Servidor WSGI y servido de estáticos en contenedor |
 | **Pillow** | Imágenes de proyectos y logos de habilidades |
-| **pytest + pytest-cov** | Suite de tests (44 tests, ~91% cobertura) |
+| **pytest + pytest-cov** | Suite de tests (49 tests, ~91% cobertura) |
 | **mypy + django-stubs** | Type checking (en el CI) |
 | **Docker · Terraform · Helm** | Contenedorización e IaC (demostrativa) |
 
@@ -40,6 +40,7 @@ Desplegado en [PythonAnywhere](https://nicolasandrescl.pythonanywhere.com) · Do
 | Endpoint | Método | Descripción |
 |---|---|---|
 | `/healthz/` | GET | Readiness probe (verifica la DB); sin auth |
+| `/cv/` · `/cv/en/` | GET | Redirige al CV en PDF (español · inglés); sin auth |
 | `/api/projects/` | GET | Lista proyectos, paginada (público) |
 | `/api/projects/{id}/` | GET | Detalle de proyecto |
 | `/api/skills/` | GET | Lista habilidades, paginada (público) |
@@ -130,12 +131,29 @@ Si defines `DATABASE_URL` el backend usa Postgres; si no, SQLite. Para migrar lo
 existentes sin perderlos (dump → loaddata → reset de secuencias con `manage.py
 reset_sequences`), sigue el runbook: [`docs/migracion_postgres.md`](docs/migracion_postgres.md).
 
+## CV en PDF
+
+El CV **no se genera en el servidor**: su fuente es HTML imprimible versionado en
+[`docs/cv/`](docs/cv/) (`cv_es.html`, `cv_en.html`, `cv.css`) y el PDF se imprime en local
+con Edge/Chrome headless. PythonAnywhere solo sirve un archivo estático: cero CPU y ninguna
+dependencia nueva.
+
+```bash
+python scripts/build_cv.py      # → portfolio_app/static/portfolio_app/docs/NicolasCano_CV_{ES,EN}.pdf
+```
+
+Para publicar un cambio: editar el HTML → `build_cv.py` → commit de HTML + PDF → en el
+servidor `git pull` + `collectstatic` + recargar la webapp. Las URLs públicas son estables
+(`/cv/`, `/cv/en/`) y no dependen del build del frontend; la URL histórica
+`/NicolasCano_BackendDeveloper_CV.pdf` redirige a `/cv/` (antes el catch-all del SPA la
+respondía con `index.html`, y el "PDF" descargado era HTML).
+
 ---
 
 ## Tests y type checking
 
 ```bash
-pytest                          # 44 tests + reporte de cobertura (~91%)
+pytest                          # 49 tests + reporte de cobertura (~91%)
 mypy portfolio_app portfolio_project   # type checking (django-stubs)
 ```
 
@@ -150,6 +168,7 @@ ambos corren en el CI. Dependencias de dev/typing en `requirements-dev.txt`.
 | `ProjectAPITest` / `SkillAPITest` | List (paginado), retrieve, ordenamiento, auth para crear |
 | `ExperienceAPITest` / `ExperienceHighlightAPITest` | List, retrieve, highlights anidados, auth |
 | `HealthCheckTest` / `PaginationTest` | `/healthz/` 200/405, envoltura de paginación |
+| `CVDownloadTest` | `/cv/` ES/EN, idioma inválido 404, URL histórica → 301, PDFs presentes |
 | `ContactAPITest` | Éxito, email enviado, campos faltantes, JSON inválido, solo POST |
 
 ---
@@ -197,14 +216,15 @@ Los antiguos `build.yml`/`deploy.yml` (CD en GitHub Actions) quedaron en
 
 ## Despliegue en PythonAnywhere
 
-1. Clona el repo en `/home/nicolasandrescl/Portafolio/`
+1. Clona el repo en `/home/nicolasandrescl/MiPortafolioDjango/` (venv `MiPortafolioDjango_env`)
 2. Crea el entorno virtual e instala `requirements.txt`
 3. Configura el archivo WSGI del panel de PA apuntando a `wsgi_pythonanywhere.py`
 4. Agrega las variables de entorno en el `.env` del servidor
 5. Ejecuta `python manage.py migrate` y `python manage.py collectstatic`
 6. Recarga la webapp desde el panel
 
-Con CI/CD configurado, los pasos 1 y en adelante se automatizan en cada `git push` a `main`.
+El deploy a PythonAnywhere es **manual** (`git pull` + pasos 5–6): el antiguo `deploy.yml` quedó
+desactivado en `.github/workflows-disabled/` y el CD con Jenkins apunta al stack Docker, no a PA.
 
 ---
 
