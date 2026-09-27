@@ -324,6 +324,33 @@ class HealthCheckTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
+class CVDownloadTest(TestCase):
+    def test_cv_default_is_spanish(self):
+        response = self.client.get(reverse('cv'))
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertTrue(response['Location'].endswith('NicolasCano_CV_ES.pdf'))
+
+    def test_cv_english(self):
+        response = self.client.get(reverse('cv-lang', args=['en']))
+        self.assertTrue(response['Location'].endswith('NicolasCano_CV_EN.pdf'))
+
+    def test_cv_unknown_language_404(self):
+        response = self.client.get(reverse('cv-lang', args=['fr']))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_legacy_pdf_url_redirects_to_cv(self):
+        # Antes el catch-all del SPA devolvía index.html en esta URL.
+        response = self.client.get('/NicolasCano_BackendDeveloper_CV.pdf')
+        self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
+        self.assertEqual(response['Location'], reverse('cv'))
+
+    def test_cv_pdfs_exist(self):
+        from django.contrib.staticfiles import finders
+        from .views import CV_FILES
+        for path in CV_FILES.values():
+            self.assertIsNotNone(finders.find(path), path)
+
+
 class PaginationTest(APITestCase):
     def test_list_response_is_paginated(self):
         Project.objects.create(title='P', description='D', technologies='T')

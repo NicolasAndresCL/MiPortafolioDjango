@@ -12,6 +12,7 @@ from portfolio_app.views import (
     SkillViewSet,
     ExperienceViewSet,
     ExperienceHighlightViewSet,
+    download_cv,
     health_check,
 )
 
@@ -28,6 +29,12 @@ router.register(r'experience-highlights', ExperienceHighlightViewSet)
 
 urlpatterns = [
     path('healthz/', health_check, name='healthz'),
+    # CV: URLs estables, independientes del build del frontend.
+    path('cv/', download_cv, name='cv'),
+    path('cv/<str:lang>/', download_cv, name='cv-lang'),
+    # URL histórica del botón del frontend: el catch-all del SPA la respondía
+    # con index.html y el "PDF" descargado era HTML.
+    path('NicolasCano_BackendDeveloper_CV.pdf', RedirectView.as_view(pattern_name='cv', permanent=True)),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/', include('portfolio_app.urls')),

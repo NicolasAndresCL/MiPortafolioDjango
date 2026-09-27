@@ -3,7 +3,9 @@ import json
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import connection
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
+from django.shortcuts import redirect
+from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
@@ -305,3 +307,22 @@ def health_check(request):
     except Exception:
         return JsonResponse({'status': 'error', 'database': 'unavailable'}, status=503)
     return JsonResponse({'status': 'ok'})
+
+
+CV_FILES = {
+    'es': 'portfolio_app/docs/NicolasCano_CV_ES.pdf',
+    'en': 'portfolio_app/docs/NicolasCano_CV_EN.pdf',
+}
+
+
+@require_http_methods(["GET", "HEAD"])
+def download_cv(request, lang='es'):
+    """URL estable del CV: redirige al PDF estático del idioma pedido.
+
+    Redirige en vez de servir el archivo para que lo entregue el mapeo de
+    estáticos del hosting (sin pasar por Python). Los PDF se generan en local
+    con `scripts/build_cv.py`.
+    """
+    if lang not in CV_FILES:
+        raise Http404('Idioma de CV no disponible.')
+    return redirect(static(CV_FILES[lang]))
