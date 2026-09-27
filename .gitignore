@@ -43,3 +43,4 @@ coverage.xml
 .pytest_cache/
 aprendizaje.md
 pendientes.md
+.playwright-mcp/
