@@ -1,6 +1,6 @@
 {
   "index.html": {
-    "file": "assets/index-C6LDUn_E.js",
+    "file": "assets/index-FW1AaXH_.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -8,11 +8,11 @@
       "assets/index-CoJVpK78.css"
     ],
     "assets": [
-      "assets/perfil-foto-nc-CvwOvWOb.png"
+      "assets/perfil-foto-nc-Csyz8C-k.webp"
     ]
   },
-  "src/assets/perfil-foto-nc.png": {
-    "file": "assets/perfil-foto-nc-CvwOvWOb.png",
-    "src": "src/assets/perfil-foto-nc.png"
+  "src/assets/perfil-foto-nc.webp": {
+    "file": "assets/perfil-foto-nc-Csyz8C-k.webp",
+    "src": "src/assets/perfil-foto-nc.webp"
   }
 }
