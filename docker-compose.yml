@@ -24,6 +24,8 @@ services:
       ALLOWED_HOSTS: "localhost,127.0.0.1,api"
       DATABASE_URL: "postgres://portafolio:portafolio@db:5432/portafolio"
       DJANGO_SETTINGS_MODULE: portfolio_project.settings.production
+      # Igual que PythonAnywhere: sirve el build de React embebido en la raíz.
+      EMBED_REACT: "True"
     ports:
       - "8000:8000"
     healthcheck:

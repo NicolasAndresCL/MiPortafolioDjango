@@ -125,6 +125,13 @@ docker compose up --build      # levanta db (Postgres) + api (gunicorn)
 curl http://localhost:8000/healthz/          # {"status": "ok"}
 ```
 
+Con `EMBED_REACT=True` (igual que en PythonAnywhere) sirve el frontend en
+**http://localhost:8000** y el CV en `/cv/` y `/cv/en/`. Limitación: el bundle de React
+llama a la API de **producción** (`VITE_API_BASE_URL` se fija en el build) y producción no
+acepta CORS desde `localhost`, así que las secciones de datos aparecen vacías y los botones del
+CV abren producción. Sirve para validar imagen, estáticos, layout y rutas; no el contenido.
+`docker compose down` para detenerlo (`-v` borra también el volumen de Postgres).
+
 ### Migrar de SQLite a PostgreSQL
 
 Si defines `DATABASE_URL` el backend usa Postgres; si no, SQLite. Para migrar los datos
