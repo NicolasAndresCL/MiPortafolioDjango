@@ -1,6 +1,16 @@
-# Compose de DESPLIEGUE: corre la imagen ya publicada en GHCR (no la construye).
-# Lo usa el stage Deploy del Jenkinsfile. Variables inyectadas por Jenkins.
-# Uso manual: SECRET_KEY=... DATABASE_URL=... docker compose -f docker-compose.deploy.yml up -d
+# Compose de DESPLIEGUE: corre una imagen ya construida (no la construye). Lo usa el
+# stage Deploy del Jenkinsfile; es un stack demostrativo LOCAL, independiente de
+# producción (PythonAnywhere + Neon).
+#
+# Uso manual:  SECRET_KEY=<≥32 chars> IMAGE_TAG=<tag> docker compose -f docker-compose.deploy.yml up -d
+#              → http://localhost:8001
+#
+# BASE DE DATOS: siempre el Postgres de este mismo compose. DATABASE_URL está FIJA a
+# propósito (no se interpola desde el entorno ni desde .env): así ninguna variable
+# heredada puede apuntar este stack —y su `migrate` de arranque— a la base de
+# producción en Neon.
+name: portafolio-deploy
+
 services:
   db:
     image: postgres:16
@@ -17,7 +27,7 @@ services:
       retries: 5
 
   api:
-    image: ghcr.io/nicolasandrescl/portafolio-backend:latest
+    image: ${IMAGE:-ghcr.io/nicolasandrescl/portafolio-backend}:${IMAGE_TAG:-latest}
     depends_on:
       db:
         condition: service_healthy
@@ -25,10 +35,13 @@ services:
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY requerido}
       DEBUG: "False"
       ALLOWED_HOSTS: "localhost,127.0.0.1,api"
-      DATABASE_URL: ${DATABASE_URL:-postgres://portafolio:portafolio@db:5432/portafolio}
+      DATABASE_URL: "postgres://portafolio:portafolio@db:5432/portafolio"
       DJANGO_SETTINGS_MODULE: portfolio_project.settings.production
+      # Igual que PythonAnywhere: sirve el build de React embebido en la raíz.
+      EMBED_REACT: "True"
     ports:
-      - "8000:8000"
+      # 8001 y no 8000: convive con el stack de desarrollo (docker-compose.yml).
+      - "8001:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz/')"]
       interval: 10s

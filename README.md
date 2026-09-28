@@ -204,17 +204,21 @@ Reparto: **GitHub Actions = CI** (tests) · **Jenkins = CD** (build + deploy).
 - Python 3.12, instala `requirements-dev.txt`, corre `mypy` (type check) y `pytest` con cobertura, y sube el `coverage.xml`
 
 ### CD — Jenkins en Docker
-Servidor Jenkins containerizado (`jenkins/`) que ejecuta el `Jenkinsfile` (pipeline declarativo):
-1. **Test (gate)** — mypy + pytest en un contenedor `python:3.12`
-2. **Build** — imagen Docker (`ghcr.io/<owner>/portafolio-backend`)
-3. **Push** — a GHCR
-4. **Deploy** — `docker compose -f docker-compose.deploy.yml up -d` (api + Postgres) + healthcheck
+Job **`portafolio-cd`** en un Jenkins containerizado que ejecuta el `Jenkinsfile` (pipeline
+declarativo) y despliega un **stack demostrativo local** en http://localhost:8001:
+1. **Proteger DB de producción** — aborta si alguna variable del build contiene una URL de Neon
+2. **Test (gate)** — mypy + pytest en un contenedor efímero `python:3.12-slim`
+3. **Build** — imagen Docker (`ghcr.io/<owner>/portafolio-backend:<commit>`)
+4. **Push GHCR** — opcional (parámetro `PUBLISH_GHCR`, apagado por defecto)
+5. **Deploy** — `docker-compose.deploy.yml` (api + Postgres propio)
+6. **Healthcheck** — estado de salud de Docker; falla el build si no queda `healthy`
+7. **Smoke test** — `/healthz/`, `/cv/`, `/cv/en/` y `/` dentro del contenedor, y verifica que la
+   API use el Postgres local
 
-```bash
-docker compose -f jenkins/docker-compose.yml up -d --build   # levantar Jenkins → localhost:8080
-```
-Setup completo (credenciales, pipeline, triggers) en [`jenkins/README.md`](jenkins/README.md).
-Trigger por `pollSCM` (Jenkins local no recibe webhooks); portable a servidor (EC2 de `terraform/`).
+**El pipeline no toca producción**: `DATABASE_URL` está fija al Postgres del compose de deploy (no
+se lee del entorno) y no existe credencial de base de datos. Producción (PythonAnywhere + Neon) se
+despliega a mano. Setup, credenciales y triggers en [`jenkins/README.md`](jenkins/README.md).
+Trigger por `pollSCM` (Jenkins local no recibe webhooks).
 
 Los antiguos `build.yml`/`deploy.yml` (CD en GitHub Actions) quedaron en
 `.github/workflows-disabled/` como referencia.
