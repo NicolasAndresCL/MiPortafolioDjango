@@ -42,8 +42,8 @@
 
   <p class="sub-block">Bot de automatización de operaciones en tiempo real</p>
   <ul>
-    <li>Evolucioné el bot interno a través de 10 versiones (v4.0 → v5.0), con 481 tests
-        automatizados y 144 commits bajo convenciones profesionales.</li>
+    <li>Evolucioné el bot interno a través de 18 versiones (v4.0 → v6.7), con 2.800+ tests
+        automatizados y 650+ commits bajo convenciones profesionales.</li>
     <li>Orquesté ~10 motores concurrentes en hilos (alertas, reporting, watchdogs) y cerré una
         condición de carrera <em>check-then-act</em> entre ellos con un cooldown de reserva atómica.</li>
     <li>Reduje las llamadas a Google Sheets de 21 round-trips a 1 con un singleton con caché TTL
@@ -56,7 +56,7 @@
     <li>Construí un backend Django/DRF con UI en NiceGUI que reúne la evidencia de cada
         incidencia desde BigQuery y reemplaza el llenado manual de planillas y correos.</li>
     <li>Una auditoría medida detectó que la fuente principal había caído al 0,11 % de cobertura;
-        migré el timeline a una tabla con 100 % de cobertura y 13 meses de retención. 600+ tests.</li>
+        migré el timeline a una tabla con 100 % de cobertura y 13 meses de retención. 660 tests.</li>
   </ul>
 
   <p class="sub-block">Sincronización de participantes de órdenes canceladas</p>
@@ -80,7 +80,7 @@
   </div>
   <ul>
     <li>API Django + DRF para cinco dominios operativos, con UI cliente en NiceGUI que solo habla HTTP.
-        229 tests, ~83 % de cobertura exigida en CI.</li>
+        284 tests, cobertura mínima de 80 % exigida en CI.</li>
     <li>Contrato OpenAPI (drf-spectacular) verificado con una colección Postman de 79 peticiones y
         183 aserciones que Newman corre en CI contra un stack efímero; un test falla si un endpoint queda sin probar.</li>
     <li>CI de 6 jobs (GitHub Actions) y CD con Jenkins: release v1.0.0 publicada a GHCR y desplegada con

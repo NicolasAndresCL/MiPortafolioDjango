@@ -42,8 +42,8 @@
 
   <p class="sub-block">Real-time operations automation bot</p>
   <ul>
-    <li>Evolved the internal bot across 10 releases (v4.0 → v5.0), backed by 481 automated tests
-        and 144 commits following professional conventions.</li>
+    <li>Evolved the internal bot across 18 releases (v4.0 → v6.7), backed by 2,800+ automated tests
+        and 650+ commits following professional conventions.</li>
     <li>Orchestrated ~10 concurrent threaded engines (alerts, reporting, watchdogs) and closed a
         check-then-act race condition between them with an atomic-reservation cooldown.</li>
     <li>Cut Google Sheets calls from 21 round-trips to 1 with a TTL-cached singleton
@@ -56,7 +56,7 @@
     <li>Built a Django/DRF backend with a NiceGUI UI that gathers each incident's evidence from
         BigQuery, replacing manual spreadsheet and email work.</li>
     <li>A measured audit found the main data source had dropped to 0.11% coverage; I moved the
-        timeline to a table with 100% coverage and 13 months of retention. 600+ tests.</li>
+        timeline to a table with 100% coverage and 13 months of retention. 660 tests.</li>
   </ul>
 
   <p class="sub-block">Cancelled-order participant sync</p>
@@ -80,7 +80,7 @@
   </div>
   <ul>
     <li>Django + DRF API for five operational domains, with a NiceGUI client UI that talks HTTP only.
-        229 tests, ~83% coverage enforced in CI.</li>
+        284 tests, 80% minimum coverage enforced in CI.</li>
     <li>OpenAPI contract (drf-spectacular) verified by a 79-request, 183-assertion Postman collection
         that Newman runs in CI against an ephemeral stack; a test fails if any endpoint goes untested.</li>
     <li>6-job CI (GitHub Actions) and Jenkins CD: v1.0.0 released to GHCR and deployed with a
