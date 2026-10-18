@@ -1,13 +1,13 @@
 # Portafolio Backend — Django REST Framework
 
 [![CI](https://github.com/NicolasAndresCL/MiPortafolioDjango/actions/workflows/ci.yml/badge.svg)](https://github.com/NicolasAndresCL/MiPortafolioDjango/actions/workflows/ci.yml)
-![Versión](https://img.shields.io/badge/versi%C3%B3n-2.0.0-blue)
+![Versión](https://img.shields.io/badge/versi%C3%B3n-2.0.1-blue)
 ![Python](https://img.shields.io/badge/python-3.12-3776AB)
 
 | | |
 |---|---|
-| **Versión** | 2.0.0 ([CHANGELOG](CHANGELOG.md)) |
-| **Fecha** | 17 de octubre de 2026 |
+| **Versión** | 2.0.1 ([CHANGELOG](CHANGELOG.md)) |
+| **Fecha** | 18 de octubre de 2026 |
 | **Autor** | [Nicolás Andrés Cano Leal](#autor) |
 
 Backend modular de mi portafolio personal, construido con **Django 5** y **Django REST Framework**. Expone una API pública y documentada para gestionar proyectos, habilidades, experiencia laboral y mensajes de contacto, integrada con un frontend en **React/Vite**.
@@ -258,4 +258,4 @@ Backend Engineer → SRE | Python · Django · Kubernetes · Terraform · CI/CD
 - Portafolio: [nicolasandrescl.github.io](https://nicolasandrescl.github.io/)
 - Correo: [nicolas.cano.leal@gmail.com](mailto:nicolas.cano.leal@gmail.com)
 
-Portafolio Backend v2.0.0 · 17 de octubre de 2026
+Portafolio Backend v2.0.1 · 18 de octubre de 2026

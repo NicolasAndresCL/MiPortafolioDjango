@@ -7,6 +7,21 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 [Versionado Semántico](https://semver.org/lang/es/). Las versiones anteriores a 2.0.0 no tienen
 tag en git; sus entradas se reconstruyeron desde el historial de commits.
 
+## [2.0.1] — 2026-10-18
+
+Un solo titular en los tres canales que ve un reclutador: portafolio, CV y LinkedIn.
+
+### Cambiado
+- Titular oficial, igual al de LinkedIn: **Backend Engineer → SRE | Python · Django · Kubernetes ·
+  Terraform · CI/CD**. Reemplaza "Backend Python Developer | Automation & Reliability" (tarjeta del
+  avatar) y "Backend Python Developer · DevOps & Reliability" (CV ES/EN).
+- Tarjeta del avatar: rol y stack en dos líneas, y "Único desarrollador del equipo de operaciones ·
+  PedidosYa" en lugar de un lema genérico.
+- "Sobre mí" reescrito con los mismos hechos que el Perfil del CV (rol actual en PedidosYa, servicios en
+  producción, CI/CD e IaC, objetivo SRE).
+- CV ES/EN: titular y primera frase del Perfil; PDF regenerados (siguen en 2 páginas).
+- Versión 2.0.1 en la API (OpenAPI), Helm (`appVersion` 2.0.1, chart 0.2.1) y footer.
+
 ## [2.0.0] — 2026-10-17
 
 Rediseño visual del frontend con un sistema de temas. El contrato de la API no cambia; el salto
