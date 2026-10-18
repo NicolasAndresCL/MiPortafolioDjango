@@ -146,7 +146,7 @@ SPECTACULAR_SETTINGS = {
     "Se integran assets locales, favicon, logo y layout extendido para mejorar la experiencia de navegación y presentación multiplataforma. "
     "Esta API está diseñada para ser reproducible, escalable y lista para entrevistas técnicas internacionales, con enfoque en claridad, seguridad y presentación visual."
     ),
-    'VERSION': '1.0.0',
+    'VERSION': '2.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'SWAGGER_UI_SETTINGS': {
         'displayOperationId': True,

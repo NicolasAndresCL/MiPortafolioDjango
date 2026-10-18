@@ -183,7 +183,7 @@ SPECTACULAR_SETTINGS = {
         'La interfaz Swagger UI ha sido personalizada con drf-spectacular-sidecar, '
         'estilos técnicos en tonos azules y branding propio.'
     ),
-    'VERSION': '1.0.0',
+    'VERSION': '2.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'SWAGGER_UI_SETTINGS': {
         'displayOperationId': True,
