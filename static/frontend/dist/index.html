@@ -1,11 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/static/frontend/dist/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portafolio Nicolás Cano Leal</title>
-    <script type="module" crossorigin src="/static/frontend/dist/assets/index-C7bMXVzJ.js"></script>
+    <meta name="theme-color" content="#070b14" />
+    <!-- Fuentes de los temas: Space Grotesk (Cian), Fredoka (Violeta), Cinzel (Ámbar), JetBrains Mono. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" />
+    <!-- Anti-parpadeo: aplica el tema guardado antes de que cargue React. Debe coincidir con
+         STORAGE_KEY y las claves de src/themes/palettes.js del frontend. -->
+    <style>
+      html { background: #070b14; color-scheme: dark; }
+      html[data-theme="violeta"] { background: #fbf8ff; color-scheme: light; }
+      html[data-theme="ambar"] { background: #130d0a; }
+    </style>
+    <script>
+      (function () {
+        var keys = ['cian', 'violeta', 'ambar'];
+        var key = 'cian';
+        try { key = localStorage.getItem('portafolio-theme') || key; } catch (e) {}
+        if (keys.indexOf(key) === -1) key = 'cian';
+        document.documentElement.dataset.theme = key;
+        document.documentElement.classList.add('theme-' + key);
+      })();
+    </script>
+    <script type="module" crossorigin src="/static/frontend/dist/assets/index-ORFCIsxU.js"></script>
     <link rel="stylesheet" crossorigin href="/static/frontend/dist/assets/index-CNFgZmPF.css">
   </head>
   <body>
