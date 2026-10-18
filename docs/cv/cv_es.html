@@ -81,8 +81,8 @@
   <ul>
     <li>API Django + DRF para cinco dominios operativos, con UI cliente en NiceGUI que solo habla HTTP.
         284 tests, cobertura mínima de 80 % exigida en CI.</li>
-    <li>Contrato OpenAPI (drf-spectacular) verificado con una colección Postman de 79 peticiones y
-        183 aserciones que Newman corre en CI contra un stack efímero; un test falla si un endpoint queda sin probar.</li>
+    <li>Contrato OpenAPI (drf-spectacular) verificado con una colección Postman de 82 peticiones
+        que Newman corre en CI contra un stack efímero; un test falla si un endpoint queda sin probar.</li>
     <li>CI de 6 jobs (GitHub Actions) y CD con Jenkins: release v1.0.0 publicada a GHCR y desplegada con
         respaldo previo y rollback automático.</li>
     <li>Terraform (EC2 + RDS PostgreSQL) probado sin cuenta de AWS con <code>terraform test</code> y proveedores
